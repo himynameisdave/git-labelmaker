@@ -15,7 +15,11 @@
   },
   "preferGlobal": true,
   "keywords": [
-    "git"
+    "git",
+    "labels",
+    "git-label",
+    "github",
+    "projects"
   ],
   "author": "himynameisdave",
   "license": "MIT",
