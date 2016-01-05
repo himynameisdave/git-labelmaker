@@ -3,7 +3,11 @@
 
 const fs = require("fs"),
       iq = require("inquirer"),
-      prompts = require("./components/prompts");
+      gitLabel = require("git-label"),
+      prompts  = require("./components/prompts"),
+      readRepo = require("./components/read-repo"),
+      cleanup  = require("./components/remove-tmp-pkg");
+
 
 
 //  Responsible for fetching and returning our config/token
@@ -45,11 +49,6 @@ const doPrompts = ( newLabels, done ) => {
           }
         });
       };
-
-const addLabels = (token) => {
-
-
-      };
 //  Promise-based check to see if we're even in a Git repo
 const isGitRepo = () => {
         return new Promise((res, rej) => {
@@ -61,7 +60,7 @@ const isGitRepo = () => {
       };
 
 //  Promise-based reading the git config to find the repo
-const readRepo  = () => {
+const readGitConfig  = () => {
         return new Promise((res, rej)=>{
           fs.readFile( process.cwd()+'/.git/config', 'utf8', (e, data) => {
             if (e) rej(e);
@@ -69,27 +68,58 @@ const readRepo  = () => {
           })
         });
       };
+//  Returns a config for gitLabel
+const configGitLabel = (repo, token) => {
+        return {
+          //  TODO: HARDCODING THE API IN TSK TSK TSK...
+          api:    'https://api.github.com',
+          repo:   repo,
+          token:  token
+        }
+      };
+//  Responsible for actually using git-label
+const addLabels = (repo, token, labels) => {
+        return new Promise((res, rej) => {
+          fs.writeFile(process.cwd()+'/.tmp-pkg.json', JSON.stringify( labels, null, 2 ), 'utf8', (e) => {
+            if (e) rej(e);
+            gitLabel.add(configGitLabel(repo, token), [process.cwd()+'/.tmp-pkg.json'])
+              .then(res)
+              .catch(rej);
+          });
+        });
+      };
 
 
-    Promise.all([ isGitRepo(), readRepo() ])
+    Promise.all([ isGitRepo(), readGitConfig() ])
       .then(( values )=>{
         let isGHRepo = values[0],
-            repoName = values[1];
-
-        console.log("We are "+isGHRepo+"ly in a GH repo!");
-        console.log(repoName);
+              repoName = readRepo(values[1]);
 
         fetchToken()
           .then((token)=>{
             doPrompts( [], (newLabels) => {
-              console.log("All done prompting, heres the new labels: ", newLabels)
+              addLabels(repoName, token, newLabels)
+              .then((completeMsg)=>{
+                console.log(completeMsg);
+                cleanup(process.cwd()+'/.tmp-pkg.json')
+                  .then(console.log)
+                  .catch(console.warn);
+              })
+              .catch(console.warn);
             });
           })
           .catch((msg)=>{
             console.log(msg);
             setToken((token) => {
               doPrompts( [], (newLabels) => {
-                console.log("All done prompting, heres the new labels: ", newLabels)
+                addLabels(repoName, token, newLabels)
+                  .then((completeMsg)=>{
+                    console.log(completeMsg);
+                    cleanup(process.cwd()+'/.tmp-pkg.json')
+                      .then(console.log)
+                      .catch(console.warn);
+                  })
+                  .catch(console.warn);
               });
             });
           });

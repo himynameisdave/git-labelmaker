@@ -27,6 +27,7 @@
     "commander": "^2.9.0",
     "git-label": "^3.3.0",
     "git-label-packages": "^1.1.0",
-    "inquirer": "^0.11.1"
+    "inquirer": "^0.11.1",
+    "rimraf": "^2.5.0"
   }
 }
