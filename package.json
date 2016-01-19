@@ -32,7 +32,7 @@
   "homepage": "https://github.com/himynameisdave/git-labelmaker#readme",
   "dependencies": {
     "commander": "^2.9.0",
-    "git-label": "^3.3.0",
+    "git-label": "^4.1.1",
     "git-label-packages": "^1.1.0",
     "github-url-from-git": "^1.4.0",
     "inquirer": "^0.11.1",

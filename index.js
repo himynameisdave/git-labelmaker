@@ -9,7 +9,6 @@ const fs = require("fs"),
       cleanup  = require("./components/remove-tmp-pkg");
 
 
-
 //  Responsible for fetching and returning our config/token
 const fetchToken = () => {
         return new Promise((res, rej)=>{
@@ -37,7 +36,7 @@ const setToken = (done) => {
           });
         });
       };
-//  Recurivley asks if you want to add another new label, then calls a callback when youre all done
+//  Recursivly asks if you want to add another new label, then calls a callback when youre all done
 const doPrompts = ( newLabels, done ) => {
         iq.prompt( prompts, ( answers ) => {
           newLabels.push({ name: answers.labelName, color: answers.labelColor });
@@ -62,7 +61,7 @@ const readGitConfig  = () => {
         return new Promise((res, rej)=>{
           fs.readFile( process.cwd()+'/.git/config', 'utf8', (e, data) => {
             if (e) rej(e);
-            res( data.split("\n") );// split it at newlines
+            res( data );// split it at newlines
           })
         });
       };
@@ -75,51 +74,29 @@ const configGitLabel = (repo, token) => {
           token:  token
         }
       };
-//  Responsible for actually using git-label
-const addLabels = (repo, token, labels) => {
-        return new Promise((res, rej) => {
-          fs.writeFile(process.cwd()+'/.tmp-pkg.json', JSON.stringify( labels, null, 2 ), 'utf8', (e) => {
-            if (e) rej(e);
-            gitLabel.add(configGitLabel(repo, token), [process.cwd()+'/.tmp-pkg.json'])
-              .then(res)
-              .catch(rej);
-          });
+//   Responsible for actually calling the prompts
+const handlePrompts = ( repo, token ) => {
+        doPrompts( [], (newLabels) => {
+          console.log(newLabels);
+          gitLabel.add( configGitLabel(repo, token), newLabels )
+            .then(console.log)
+            .catch(console.warn);
         });
       };
-//
-const handlePrompts = ( newLabels, repoName, token ) => {
-        console.log();
-        console.log();
-        console.log();
-      };
-
-
 
     Promise.all([ isGitRepo(), readGitConfig() ])
       .then(( values )=>{
-        let isGHRepo = values[0],
-              repoName = readRepo(values[1]);
-        //
-        // fetchToken()
-        //   .then((token)=>{
-        //     doPrompts( [], (newLabels) => {
-        //       console.log(newLabels);
-        //       gitLabel( configGitLabel(repoName, token), newLabels )
-        //         .then(console.log)
-        //         .catch(console.warn);
-        //     });
-        //   })
-        //   .catch((msg)=>{
-        //     console.log(msg);
-        //     setToken((token) => {
-        //       doPrompts( [], (newLabels) => {
-        //         console.log(newLabels);
-        //         gitLabel( configGitLabel(repoName, token), newLabels )
-        //           .then(console.log)
-        //           .catch(console.warn);
-        //       });
-        //     });
-        //   });
+        let repo = readRepo(values[1].split("\n"));
+        fetchToken()
+          .then((token)=>{
+            handlePrompts( repo, token );
+          })
+          .catch((msg)=>{
+            console.log(msg);
+            setToken((token) => {
+              handlePrompts( repo, token );
+            });
+          });
 
       })
       .catch((e)=>{
