@@ -1,10 +1,10 @@
 {
   "name": "git-labelmaker",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Create git labels from the command line using git-label!",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "postpublish": "git push && git push --tag"
   },
   "repository": {
     "type": "git",
