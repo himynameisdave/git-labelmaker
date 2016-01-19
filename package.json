@@ -2,7 +2,7 @@
   "name": "git-labelmaker",
   "version": "0.1.0",
   "description": "Create git labels from the command line using git-label!",
-  "main": "git-labelmaker.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,7 +11,10 @@
     "url": "git+https://github.com/himynameisdave/git-labelmaker.git"
   },
   "bin": {
-    "git-labelmaker": "git-labelmaker.js"
+    "git-labelmaker": "index.js"
+  },
+  "engines": {
+    "node": ">= 4.0.0"
   },
   "preferGlobal": true,
   "keywords": [
@@ -31,6 +34,7 @@
     "commander": "^2.9.0",
     "git-label": "^3.3.0",
     "git-label-packages": "^1.1.0",
+    "github-url-from-git": "^1.4.0",
     "inquirer": "^0.11.1",
     "rimraf": "^2.5.0"
   }

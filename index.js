@@ -36,7 +36,6 @@ const setToken = (done) => {
             done(answer.token);
           });
         });
-
       };
 //  Recurivley asks if you want to add another new label, then calls a callback when youre all done
 const doPrompts = ( newLabels, done ) => {
@@ -58,13 +57,12 @@ const isGitRepo = () => {
           })
         });
       };
-
 //  Promise-based reading the git config to find the repo
 const readGitConfig  = () => {
         return new Promise((res, rej)=>{
           fs.readFile( process.cwd()+'/.git/config', 'utf8', (e, data) => {
             if (e) rej(e);
-            res( data.split("\n") );
+            res( data.split("\n") );// split it at newlines
           })
         });
       };
@@ -88,44 +86,44 @@ const addLabels = (repo, token, labels) => {
           });
         });
       };
+//
+const handlePrompts = ( newLabels, repoName, token ) => {
+        console.log();
+        console.log();
+        console.log();
+      };
+
 
 
     Promise.all([ isGitRepo(), readGitConfig() ])
       .then(( values )=>{
         let isGHRepo = values[0],
               repoName = readRepo(values[1]);
-
-        fetchToken()
-          .then((token)=>{
-            doPrompts( [], (newLabels) => {
-              addLabels(repoName, token, newLabels)
-              .then((completeMsg)=>{
-                console.log(completeMsg);
-                cleanup(process.cwd()+'/.tmp-pkg.json')
-                  .then(console.log)
-                  .catch(console.warn);
-              })
-              .catch(console.warn);
-            });
-          })
-          .catch((msg)=>{
-            console.log(msg);
-            setToken((token) => {
-              doPrompts( [], (newLabels) => {
-                addLabels(repoName, token, newLabels)
-                  .then((completeMsg)=>{
-                    console.log(completeMsg);
-                    cleanup(process.cwd()+'/.tmp-pkg.json')
-                      .then(console.log)
-                      .catch(console.warn);
-                  })
-                  .catch(console.warn);
-              });
-            });
-          });
+        //
+        // fetchToken()
+        //   .then((token)=>{
+        //     doPrompts( [], (newLabels) => {
+        //       console.log(newLabels);
+        //       gitLabel( configGitLabel(repoName, token), newLabels )
+        //         .then(console.log)
+        //         .catch(console.warn);
+        //     });
+        //   })
+        //   .catch((msg)=>{
+        //     console.log(msg);
+        //     setToken((token) => {
+        //       doPrompts( [], (newLabels) => {
+        //         console.log(newLabels);
+        //         gitLabel( configGitLabel(repoName, token), newLabels )
+        //           .then(console.log)
+        //           .catch(console.warn);
+        //       });
+        //     });
+        //   });
 
       })
       .catch((e)=>{
+        console.warn(e);
         console.warn("Please run git-labelmaker from inside a git repo!")
         process.exit(1);
       });
