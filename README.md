@@ -30,10 +30,9 @@ After that, it jumps right into what new labels you would like to add. Fill out 
 
 **SOME TODOS:**
 
-- [ ] learn which api to call based on git data
-- [ ] ability to remove current labels
-- [ ] ability to simply use predefined [`git-label-packages`](https://github.com/jasonbellamy/git-label-packages)
-- [ ] accept a parameter to reset the token
+- [ ] ability to remove current labels [#1](https://github.com/himynameisdave/git-labelmaker/issues/1)
+- [ ] ability to simply use predefined [`git-label-packages`](https://github.com/jasonbellamy/git-label-packages) [#3](https://github.com/himynameisdave/git-labelmaker/issues/3)
+- [ ] accept a parameter to reset the token [#4](https://github.com/himynameisdave/git-labelmaker/issues/4)
 
 
 ---
