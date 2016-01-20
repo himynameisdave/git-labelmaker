@@ -4,7 +4,7 @@
 const fs = require("fs"),
       iq = require("inquirer"),
       gitLabel = require("git-label"),
-      prompts  = require("./components/prompts"),
+      addPrompts  = require("./components/add-prompts"),
       readRepo = require("./components/read-repo"),
       cleanup  = require("./components/remove-tmp-pkg");
 
@@ -37,11 +37,11 @@ const setToken = (done) => {
         });
       };
 //  Recursivly asks if you want to add another new label, then calls a callback when youre all done
-const doPrompts = ( newLabels, done ) => {
-        iq.prompt( prompts, ( answers ) => {
+const doAddPrompts = ( newLabels, done ) => {
+        iq.prompt( addPrompts, ( answers ) => {
           newLabels.push({ name: answers.labelName, color: answers.labelColor });
           if ( answers.addAnother ){
-            doPrompts( newLabels, done );
+            doAddPrompts( newLabels, done );
           }else{
             done( newLabels );
           }
@@ -76,7 +76,7 @@ const configGitLabel = (repo, token) => {
       };
 //   Responsible for actually calling the prompts
 const handlePrompts = ( repo, token ) => {
-        doPrompts( [], (newLabels) => {
+        doAddPrompts( [], (newLabels) => {
           console.log(newLabels);
           gitLabel.add( configGitLabel(repo, token), newLabels )
             .then(console.log)
