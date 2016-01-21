@@ -4,9 +4,10 @@
 const fs = require("fs"),
       iq = require("inquirer"),
       gitLabel = require("git-label"),
-      addPrompts  = require("./components/add-prompts"),
       readRepo = require("./components/read-repo"),
-      cleanup  = require("./components/remove-tmp-pkg");
+      cleanup  = require("./components/remove-tmp-pkg"),
+      mainPrompts = require("./components/main-prompts"),
+      addPrompts  = require("./components/add-prompts");
 
 
 //  Responsible for fetching and returning our config/token
@@ -47,6 +48,7 @@ const doAddPrompts = ( newLabels, done ) => {
           }
         });
       };
+
 //  Promise-based check to see if we're even in a Git repo
 const isGitRepo = () => {
         return new Promise((res, rej) => {
@@ -74,30 +76,40 @@ const configGitLabel = (repo, token) => {
           token:  token
         }
       };
-//   Responsible for actually calling the prompts
-const handlePrompts = ( repo, token ) => {
-        doAddPrompts( [], (newLabels) => {
-          console.log(newLabels);
-          gitLabel.add( configGitLabel(repo, token), newLabels )
-            .then(console.log)
-            .catch(console.warn);
-        });
+
+const handleAddPrompts = (repo, token, newLabels) => {
+        gitLabel.add( configGitLabel(repo, token), newLabels )
+          .then(console.log)
+          .catch(console.warn);
       };
+
+const handleMainPrompts = (repo, ans) => {
+        if ( ans.main.toLowerCase() === "reset token" ){
+          setToken((token) => {
+            iq.prompt( mainPrompts, handleMainPrompts.bind(null, repo));
+          })
+        }
+        if ( ans.main.toLowerCase() === "add labels" ){
+          fetchToken()
+            .then((token)=>{
+              doAddPrompts( [], handleAddPrompts.bind(null, repo, token));
+            })
+            .catch((msg)=>{
+              console.log(msg);
+              setToken((token) => {
+                iq.prompt( mainPrompts, handleMainPrompts.bind(null, repo));
+              });
+            });
+        }
+      };
+
+
+//    LET'S DO IT
 
     Promise.all([ isGitRepo(), readGitConfig() ])
       .then(( values )=>{
         let repo = readRepo(values[1].split("\n"));
-        fetchToken()
-          .then((token)=>{
-            handlePrompts( repo, token );
-          })
-          .catch((msg)=>{
-            console.log(msg);
-            setToken((token) => {
-              handlePrompts( repo, token );
-            });
-          });
-
+        iq.prompt( mainPrompts, handleMainPrompts.bind(null, repo));
       })
       .catch((e)=>{
         console.warn(e);
