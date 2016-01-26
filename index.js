@@ -4,6 +4,7 @@
 const fs = require("fs"),
       iq = require("inquirer"),
       gitLabel = require("git-label"),
+      octonode = require("octonode"),
       readRepo = require("./components/read-repo"),
       cleanup  = require("./components/remove-tmp-pkg"),
       mainPrompts = require("./components/main-prompts"),
@@ -49,6 +50,26 @@ const doAddPrompts = ( newLabels, done ) => {
         });
       };
 
+const doRemovePrompts = ( token, repo ) => {
+        octonode.client(token).get('/repos/'+repo+'/labels', (e, status, body) => {
+          iq.prompt([{
+            name:     "removals",
+            type:     "checkbox",
+            message:  "Which labels would you like to remove?",
+            choices:  body.map((label) => label.name),
+            filter:   (removals) => {
+              return body.filter((label) => {
+                return removals.indexOf(label.name) > -1 ? { name: label.name, color: label.color } : false;
+              });
+            }
+          }], (answers) => {
+            gitLabel.remove( configGitLabel(repo, token), answers.removals )
+              .then(console.log)
+              .catch(console.warn);
+          });
+        });
+      };
+
 //  Promise-based check to see if we're even in a Git repo
 const isGitRepo = () => {
         return new Promise((res, rej) => {
@@ -85,27 +106,32 @@ const handleAddPrompts = (repo, token, newLabels) => {
 
 const handleMainPrompts = (repo, ans) => {
         if ( ans.main.toLowerCase() === "reset token" ){
-          setToken((token) => {
+          return setToken((token) => {
             iq.prompt( mainPrompts, handleMainPrompts.bind(null, repo));
-          })
+          });
         }
-        if ( ans.main.toLowerCase() === "add labels" ){
-          fetchToken()
-            .then((token)=>{
+        //  if it's not to reset the token then we
+        fetchToken()
+          .then((token)=>{
+            if ( ans.main.toLowerCase() === "add labels" ){
               doAddPrompts( [], handleAddPrompts.bind(null, repo, token));
-            })
-            .catch((msg)=>{
-              console.log(msg);
-              setToken((token) => {
-                iq.prompt( mainPrompts, handleMainPrompts.bind(null, repo));
-              });
+            }
+            if ( ans.main.toLowerCase() === "remove labels" ){
+              doRemovePrompts(token, repo);
+            }
+          })
+          .catch((msg)=>{
+            console.log(msg);
+            setToken((token) => {
+              iq.prompt( mainPrompts, handleMainPrompts.bind(null, repo));
             });
-        }
+          });
+
+
       };
 
 
 //    LET'S DO IT
-
     Promise.all([ isGitRepo(), readGitConfig() ])
       .then(( values )=>{
         let repo = readRepo(values[1].split("\n"));
