@@ -1,13 +1,5 @@
 ## git-labelmaker
-:flags: Create git labels from the command line using [`git-label`](https://github.com/jasonbellamy/git-label)!
-
-### About
-
-`git-labelmaker` is essentially a sugar for the [`git-label`](https://github.com/jasonbellamy/git-label) package written by [**jasonbellamy**](https://github.com/jasonbellamy). It provides a few nice features that make creating custom labels a breeze, such as:
-
-- stores your GH token so you don't have to keep whipping it out
-- learns the gh repo name so you don't need to add it to a config
-- wraps the whole thing in pretty [**inquirer.js**](https://github.com/SBoudrias/Inquirer.js/) prompts
+:flags: Create git labels from the command line using **`git-labelmaker`**! With it you can easily add or remove git-labels, making it easier for your project to adhere to a sane labelling scheme.
 
 ### Install
 
@@ -24,16 +16,19 @@ Using this bad boy is a breeze. First `cd` into your repository and then run the
 ```
 git-labelmaker
 ```
-If it's the first time running the command, you will be prompted for a GitHub personal access token, which you can [generate over here](https://github.com/settings/tokens).
 
-After that, it jumps right into what new labels you would like to add. Fill out the name and color of as many labels as you like. Be sure to use a proper hex color for the color (eg: `#ffffff`).
+You'll then be able to add or remove labels for the repository you are in.
 
-**SOME TODOS:**
+If it's the first time running the command, you will be prompted for a GitHub token, which you can [generate over here](https://github.com/settings/tokens).
 
-- [ ] ability to remove current labels [#1](https://github.com/himynameisdave/git-labelmaker/issues/1)
-- [ ] ability to simply use predefined [`git-label-packages`](https://github.com/jasonbellamy/git-label-packages) [#3](https://github.com/himynameisdave/git-labelmaker/issues/3)
-- [ ] accept a parameter to reset the token [#4](https://github.com/himynameisdave/git-labelmaker/issues/4)
+### About
 
+`git-labelmaker` is essentially a sugar for the [`git-label`](https://github.com/jasonbellamy/git-label) package written by [**jasonbellamy**](https://github.com/jasonbellamy). It provides a few nice features that make creating custom labels a breeze, such as:
+
+- stores your GH token so you don't have to keep whipping it out
+- learns the gh repo name so you don't need to add it to a config
+- removal based on the current labels in the repo
+- wraps the whole thing in pretty [**inquirer.js**](https://github.com/SBoudrias/Inquirer.js/) prompts
 
 ---
 

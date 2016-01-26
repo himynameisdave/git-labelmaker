@@ -126,8 +126,6 @@ const handleMainPrompts = (repo, ans) => {
               iq.prompt( mainPrompts, handleMainPrompts.bind(null, repo));
             });
           });
-
-
       };
 
 
