@@ -39,11 +39,11 @@ const setToken = (done) => {
         });
       };
 //  Recursivly asks if you want to add another new label, then calls a callback when youre all done
-const doAddPrompts = ( newLabels, done ) => {
+const doCustomLabelPrompts = ( newLabels, done ) => {
         iq.prompt( addPrompts, ( answers ) => {
           newLabels.push({ name: answers.labelName, color: answers.labelColor });
           if ( answers.addAnother ){
-            doAddPrompts( newLabels, done );
+            doCustomLabelPrompts( newLabels, done );
           }else{
             done( newLabels );
           }
@@ -91,7 +91,6 @@ const readGitConfig  = () => {
 //  Returns a config for gitLabel
 const configGitLabel = (repo, token) => {
         return {
-          //  TODO: HARDCODING THE API IN TSK TSK TSK...
           api:    'https://api.github.com',
           repo:   repo,
           token:  token
@@ -114,7 +113,17 @@ const handleMainPrompts = (repo, ans) => {
         fetchToken()
           .then((token)=>{
             if ( ans.main.toLowerCase() === "add labels" ){
-              doAddPrompts( [], handleAddPrompts.bind(null, repo, token));
+              // check if they want to add labels from a package
+              iq.prompt([{
+                name:    "addMethod",
+                type:    "list",
+                message: "Do you want to use a label package or create custom labels?",
+                choices: [ "Use a package", "Create custom labels" ]
+              }], (addMethodAns) => {
+                if ( addMethodAns.addMethod.toLowerCase() === "create custom labels" ) {
+                  doCustomLabelPrompts( [], handleAddPrompts.bind(null, repo, token));
+                }
+              });
             }
             if ( ans.main.toLowerCase() === "remove labels" ){
               doRemovePrompts(token, repo);
