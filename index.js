@@ -3,12 +3,12 @@
 
 const fs = require("fs"),
       iq = require("inquirer"),
-      gitLabel = require("git-label"),
-      octonode = require("octonode"),
-      readRepo = require("./components/read-repo"),
-      cleanup  = require("./components/remove-tmp-pkg"),
-      mainPrompts = require("./components/main-prompts"),
-      addPrompts  = require("./components/add-prompts");
+      octonode          = require("octonode"),
+      gitLabel          = require("git-label"),
+      readRepo          = require("./components/read-repo"),
+      cleanup           = require("./components/remove-tmp-pkg"),
+      mainPrompts       = require("./components/main-prompts"),
+      customAddPrompts  = require("./components/add-prompts");
 
 
 //  Responsible for fetching and returning our config/token
@@ -40,13 +40,41 @@ const setToken = (done) => {
       };
 //  Recursivly asks if you want to add another new label, then calls a callback when youre all done
 const doCustomLabelPrompts = ( newLabels, done ) => {
-        iq.prompt( addPrompts, ( answers ) => {
+        iq.prompt( customAddPrompts, ( answers ) => {
           newLabels.push({ name: answers.labelName, color: answers.labelColor });
           if ( answers.addAnother ){
             doCustomLabelPrompts( newLabels, done );
           }else{
             done( newLabels );
           }
+        });
+      };
+
+const doPackageLabelPrompts = ( done ) => {
+        iq.prompt([
+          {
+            name: "type",
+            type: "list",
+            message: "Do you want to use a local package or choose from a list of common label packages?",
+            choices: [ "Local", "Packages" ]
+          },{
+            name: "pkgs",
+            type: "checkbox",
+            message: "Which packages would you like to use?",
+            choices: [
+              "git-label-packages:cla",
+              "git-label-packages:priority",
+              "git-label-packages:status",
+              "git-label-packages:type"
+            ],
+            when: (answers) => {
+              return answers.type.toLowerCase() === "packages";
+            }
+          }
+        ], (ans) => {
+          console.log(ans);
+          // if (ans.)
+          // done();
         });
       };
 
@@ -121,8 +149,9 @@ const handleMainPrompts = (repo, ans) => {
                 choices: [ "Use a package", "Create custom labels" ]
               }], (addMethodAns) => {
                 if ( addMethodAns.addMethod.toLowerCase() === "create custom labels" ) {
-                  doCustomLabelPrompts( [], handleAddPrompts.bind(null, repo, token));
+                  return doCustomLabelPrompts( [], handleAddPrompts.bind(null, repo, token));
                 }
+                doPackageLabelPrompts( handleAddPrompts.bind(null, repo, token) );
               });
             }
             if ( ans.main.toLowerCase() === "remove labels" ){
