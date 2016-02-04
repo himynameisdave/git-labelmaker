@@ -10,6 +10,8 @@ const fs = require("fs"),
       mainPrompts       = require("./components/main-prompts"),
       customAddPrompts  = require("./components/add-prompts");
 
+//    TODO: this should be a util
+const replaceAll = (str, find, replace) => str.split(find).join(replace);
 
 //  Responsible for fetching and returning our config/token
 const fetchToken = () => {
@@ -18,7 +20,6 @@ const fetchToken = () => {
             if (e) rej("No token.json file found!");
             if (JSON.parse(data).token === "") rej("No token found!");
             res(JSON.parse(data).token);
-            res();
           });
         });
       };
@@ -133,6 +134,7 @@ const handleAddPrompts = (repo, token, newLabels) => {
 
 const handleMainPrompts = (repo, ans) => {
         if ( ans.main.toLowerCase() === "reset token" ){
+          //  process will end after new token is set
           return setToken((token) => {
             iq.prompt( mainPrompts, handleMainPrompts.bind(null, repo));
           });
@@ -140,18 +142,31 @@ const handleMainPrompts = (repo, ans) => {
         //  if it's not to reset the token then we
         fetchToken()
           .then((token)=>{
-            if ( ans.main.toLowerCase() === "add labels" ){
-              // check if they want to add labels from a package
+            if ( ans.main.toLowerCase() === "add custom labels" ){
+              return doCustomLabelPrompts( [], handleAddPrompts.bind(null, repo, token));
+            }
+            if ( ans.main.toLowerCase() === "add labels from package" ){
+              // return doPackageLabelPrompts( handleAddPrompts.bind(null, repo, token) );
+              let packagePath;
               iq.prompt([{
-                name:    "addMethod",
-                type:    "list",
-                message: "Do you want to use a label package or create custom labels?",
-                choices: [ "Use a package", "Create custom labels" ]
-              }], (addMethodAns) => {
-                if ( addMethodAns.addMethod.toLowerCase() === "create custom labels" ) {
-                  return doCustomLabelPrompts( [], handleAddPrompts.bind(null, repo, token));
+                name: "path",
+                type: "input",
+                message: "What is the path & name of the package you want to use? (eg: `packages/my-label-pkg.json`)",
+                validate: (path) => {
+                  try {
+                    if (path.indexOf(".json") < 0) throw "Not a JSON file";
+                    packagePath = path.indexOf("/") === 0 ? path.replace("/","") : path;
+                    //  TODO: make that fn loop over an array of replaces, or make it REMOVEALL and ditch that 3rd param
+                    packagePath = replaceAll( replaceAll( replaceAll(packagePath, '`', ""), '"', "" ), "'", "" )
+                    if ( fs.statSync( process.cwd()+"/"+packagePath ) ){
+                      return true;
+                    }
+                  } catch (e){
+                    return e;
+                  }
                 }
-                doPackageLabelPrompts( handleAddPrompts.bind(null, repo, token) );
+              }], (ans) => {
+                console.log("packagePath === "+packagePath);
               });
             }
             if ( ans.main.toLowerCase() === "remove labels" ){
