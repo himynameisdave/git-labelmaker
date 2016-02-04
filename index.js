@@ -3,13 +3,15 @@
 
 const fs = require("fs"),
       iq = require("inquirer"),
-      gitLabel = require("git-label"),
-      octonode = require("octonode"),
-      readRepo = require("./components/read-repo"),
-      cleanup  = require("./components/remove-tmp-pkg"),
-      mainPrompts = require("./components/main-prompts"),
-      addPrompts  = require("./components/add-prompts");
+      octonode          = require("octonode"),
+      gitLabel          = require("git-label"),
+      readRepo          = require("./components/read-repo"),
+      cleanup           = require("./components/remove-tmp-pkg"),
+      mainPrompts       = require("./components/main-prompts"),
+      customAddPrompts  = require("./components/add-prompts");
 
+//    TODO: this should be a util
+const replaceAll = (str, find, replace) => str.split(find).join(replace);
 
 //  Responsible for fetching and returning our config/token
 const fetchToken = () => {
@@ -18,7 +20,6 @@ const fetchToken = () => {
             if (e) rej("No token.json file found!");
             if (JSON.parse(data).token === "") rej("No token found!");
             res(JSON.parse(data).token);
-            res();
           });
         });
       };
@@ -39,14 +40,42 @@ const setToken = (done) => {
         });
       };
 //  Recursivly asks if you want to add another new label, then calls a callback when youre all done
-const doAddPrompts = ( newLabels, done ) => {
-        iq.prompt( addPrompts, ( answers ) => {
+const doCustomLabelPrompts = ( newLabels, done ) => {
+        iq.prompt( customAddPrompts, ( answers ) => {
           newLabels.push({ name: answers.labelName, color: answers.labelColor });
           if ( answers.addAnother ){
-            doAddPrompts( newLabels, done );
+            doCustomLabelPrompts( newLabels, done );
           }else{
             done( newLabels );
           }
+        });
+      };
+
+const doPackageLabelPrompts = ( done ) => {
+        iq.prompt([
+          {
+            name: "type",
+            type: "list",
+            message: "Do you want to use a local package or choose from a list of common label packages?",
+            choices: [ "Local", "Packages" ]
+          },{
+            name: "pkgs",
+            type: "checkbox",
+            message: "Which packages would you like to use?",
+            choices: [
+              "git-label-packages:cla",
+              "git-label-packages:priority",
+              "git-label-packages:status",
+              "git-label-packages:type"
+            ],
+            when: (answers) => {
+              return answers.type.toLowerCase() === "packages";
+            }
+          }
+        ], (ans) => {
+          console.log(ans);
+          // if (ans.)
+          // done();
         });
       };
 
@@ -91,13 +120,13 @@ const readGitConfig  = () => {
 //  Returns a config for gitLabel
 const configGitLabel = (repo, token) => {
         return {
-          //  TODO: HARDCODING THE API IN TSK TSK TSK...
           api:    'https://api.github.com',
           repo:   repo,
           token:  token
         }
       };
 
+//    TODO: could be refactored to return the git.add as a promise..?
 const handleAddPrompts = (repo, token, newLabels) => {
         gitLabel.add( configGitLabel(repo, token), newLabels )
           .then(console.log)
@@ -106,6 +135,7 @@ const handleAddPrompts = (repo, token, newLabels) => {
 
 const handleMainPrompts = (repo, ans) => {
         if ( ans.main.toLowerCase() === "reset token" ){
+          //  process will end after new token is set
           return setToken((token) => {
             iq.prompt( mainPrompts, handleMainPrompts.bind(null, repo));
           });
@@ -113,8 +143,37 @@ const handleMainPrompts = (repo, ans) => {
         //  if it's not to reset the token then we
         fetchToken()
           .then((token)=>{
-            if ( ans.main.toLowerCase() === "add labels" ){
-              doAddPrompts( [], handleAddPrompts.bind(null, repo, token));
+            if ( ans.main.toLowerCase() === "add custom labels" ){
+              return doCustomLabelPrompts( [], handleAddPrompts.bind(null, repo, token));
+            }
+            if ( ans.main.toLowerCase() === "add labels from package" ){
+              // return doPackageLabelPrompts( handleAddPrompts.bind(null, repo, token) );
+              let packagePath;
+              iq.prompt([{
+                name: "path",
+                type: "input",
+                message: "What is the path & name of the package you want to use? (eg: `packages/my-label-pkg.json`)",
+                validate: (path) => {
+                  try {
+                    if (path.indexOf(".json") < 0) throw "Not a JSON file";
+                    packagePath = path.indexOf("/") === 0 ? path.replace("/","") : path;
+                    //  TODO: make that fn loop over an array of replaces, or make it REMOVEALL and ditch that 3rd param
+                    packagePath = replaceAll( replaceAll( replaceAll(packagePath, '`', ""), '"', "" ), "'", "" )
+                    if ( fs.statSync( process.cwd()+"/"+packagePath ) ){
+                      return true;
+                    }
+                  } catch (e){
+                    return e;
+                  }
+                }
+              }], (ans) => {
+                gitLabel.find( replaceAll( replaceAll( replaceAll(ans.path, '`', ""), '"', "" ), "'", "" ) )
+                  .then((newLabels)=>{
+                    return gitLabel.add( configGitLabel(repo, token), newLabels )
+                  })
+                  .then(console.log)
+                  .catch(console.warn);
+              });
             }
             if ( ans.main.toLowerCase() === "remove labels" ){
               doRemovePrompts(token, repo);

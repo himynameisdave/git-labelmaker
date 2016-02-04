@@ -1,5 +1,5 @@
 ## git-labelmaker
-:flags: Create git labels from the command line using **`git-labelmaker`**! With it you can easily add or remove git-labels, making it easier for your project to adhere to a sane labelling scheme.
+:flags: Edit git labels from the command line using **`git-labelmaker`**! You can easily add or remove git-labels, making it easier for your project to adhere to a sane labelling scheme.
 
 ### Install
 
