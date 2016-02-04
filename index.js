@@ -126,6 +126,7 @@ const configGitLabel = (repo, token) => {
         }
       };
 
+//    TODO: could be refactored to return the git.add as a promise..?
 const handleAddPrompts = (repo, token, newLabels) => {
         gitLabel.add( configGitLabel(repo, token), newLabels )
           .then(console.log)
@@ -166,7 +167,12 @@ const handleMainPrompts = (repo, ans) => {
                   }
                 }
               }], (ans) => {
-                console.log("packagePath === "+packagePath);
+                gitLabel.find( replaceAll( replaceAll( replaceAll(ans.path, '`', ""), '"', "" ), "'", "" ) )
+                  .then((newLabels)=>{
+                    return gitLabel.add( configGitLabel(repo, token), newLabels )
+                  })
+                  .then(console.log)
+                  .catch(console.warn);
               });
             }
             if ( ans.main.toLowerCase() === "remove labels" ){
