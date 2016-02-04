@@ -1,5 +1,5 @@
-## git-labelmaker
-:flags: Edit git labels from the command line using **`git-labelmaker`**! You can easily add or remove git-labels, making it easier for your project to adhere to a sane labelling scheme.
+## :flags: git-labelmaker
+Edit GitHub labels from the command line using **`git-labelmaker`**! You can easily add or remove GitHub labels, making it easier for your projects to adhere to a sane labelling scheme.
 
 ### Install
 
@@ -11,26 +11,36 @@ npm i -g git-labelmaker
 
 ### Usage
 
-Using this bad boy is a breeze. First `cd` into your repository and then run the command without any arguments:
+Using this bad boy is a breeze. First `cd` into your git repository, run the command and follow the prompts!
 
 ```
 git-labelmaker
 ```
 
-You'll then be able to add or remove labels for the repository you are in.
+#### Token
 
-If it's the first time running the command, you will be prompted for a GitHub token, which you can [generate over here](https://github.com/settings/tokens).
+If it's the first time running it, you will be prompted for a GitHub token, which you can [generate over here](https://github.com/settings/tokens). You can reset your token later, but otherwise `git-labelmaker` will remember it for you.
 
-### About
+#### Add Custom Labels
 
-`git-labelmaker` is essentially a sugar for the [`git-label`](https://github.com/jasonbellamy/git-label) package written by [**jasonbellamy**](https://github.com/jasonbellamy). It provides a few nice features that make creating custom labels a breeze, such as:
+You can add your own labels one at a time. You will be prompted for your new label's text and color. Include the `#` in front of your 3 or 6 digit hex color. Add as many as you like!
 
-- stores your GH token so you don't have to keep whipping it out
-- learns the gh repo name so you don't need to add it to a config
-- removal based on the current labels in the repo
-- wraps the whole thing in pretty [**inquirer.js**](https://github.com/SBoudrias/Inquirer.js/) prompts
+#### Add Labels From Package
+
+If you have a labels package in your current directory that you would like to use for adding labels, just supply the path and name of that file. So like if it's at the root of the current directory, just `labels.json`.
+
+It must be a valid `.json` file, and must match the expected format. Check out [these really good ones](https://github.com/jasonbellamy/git-label-packages/tree/master/packages) if you need a template.
+
+#### Remove Labels
+
+You can also remove labels. Just select the ones you want to ditch and :boom: they're gone.
+
+> **Related:**
+- [`git-label`](https://github.com/jasonbellamy/git-label) by [**jasonbellamy**](https://github.com/jasonbellamy), which `git-labelmaker` uses to add and remove labels
+- [`git-label-packages`](https://github.com/jasonbellamy/git-label-packages) is a really good set of default packages if you really want to level up your projects
+- [`git-label-faces`](https://github.com/himynameisdave/git-label-faces) is a joke package set that you should totally never use for real
 
 ---
 
 *Created by [Dave Lunny](https://twitter.com/dave_lunny) in the wonderful year of 2016.*
-*Licensed under MIT*
+*Licensed under MIT :hand:*
