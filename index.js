@@ -80,6 +80,7 @@ const doPackageLabelPrompts = ( done ) => {
         });
       };
 
+//    TODO: this function is ripe for some refactoring
 const doRemovePrompts = ( token, repo ) => {
         octonode.client(token).get('/repos/'+repo+'/labels', (e, status, body) => {
           iq.prompt([{
@@ -93,9 +94,36 @@ const doRemovePrompts = ( token, repo ) => {
               });
             }
           }], (answers) => {
-            gitLabel.remove( configGitLabel(repo, token), answers.removals )
-              .then(console.log)
-              .catch(console.warn);
+            //  early return if no labels
+            //  TODO: this could be a check in the above prompt
+            if ( answers.removals.length === 0 ) {
+              console.log("No labels chosen to remove.");
+              return ;
+            };
+
+            //  Tell the user what they're about to lose
+            console.log("About to delete the following labels:")
+            answers.removals.map((label)=>{
+              return " - "+label.name+"\n";
+            }).forEach((prettyLabel)=>{
+              console.log(prettyLabel);
+            });
+            //  Ya sure ya wanna do this bud?
+            iq.prompt([{
+              name:     "youSure",
+              type:     "confirm",
+              message:  "Are you sure you want to delete these labels?",
+              default:  true
+            }], (confirmRemove) => {
+              if ( confirmRemove.youSure ) {
+                gitLabel.remove( configGitLabel(repo, token), answers.removals )
+                .then(console.log)
+                .catch(console.warn);
+              } else {
+                process.exit(1)
+              }
+            })
+
           });
         });
       };
@@ -190,7 +218,6 @@ const handleMainPrompts = (repo, ans) => {
             });
           });
       };
-
 
 //    LET'S DO IT
     Promise.all([ isGitRepo(), readGitConfig() ])
