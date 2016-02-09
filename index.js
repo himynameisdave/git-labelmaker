@@ -5,6 +5,7 @@ const fs = require("fs"),
       iq = require("inquirer"),
       octonode          = require("octonode"),
       gitLabel          = require("git-label"),
+      banner            = require("./components/banners"),
       readRepo          = require("./components/read-repo"),
       cleanup           = require("./components/remove-tmp-pkg"),
       mainPrompts       = require("./components/main-prompts"),
@@ -135,6 +136,7 @@ const handleAddPrompts = (repo, token, newLabels) => {
 
 const handleMainPrompts = (repo, ans) => {
         if ( ans.main.toLowerCase() === "reset token" ){
+          banner.resetToken();
           //  process will end after new token is set
           return setToken((token) => {
             iq.prompt( mainPrompts, handleMainPrompts.bind(null, repo));
@@ -144,10 +146,11 @@ const handleMainPrompts = (repo, ans) => {
         fetchToken()
           .then((token)=>{
             if ( ans.main.toLowerCase() === "add custom labels" ){
+              banner.addCustom();
               return doCustomLabelPrompts( [], handleAddPrompts.bind(null, repo, token));
             }
             if ( ans.main.toLowerCase() === "add labels from package" ){
-              // return doPackageLabelPrompts( handleAddPrompts.bind(null, repo, token) );
+              banner.addFromPackage();
               let packagePath;
               iq.prompt([{
                 name: "path",
@@ -176,6 +179,7 @@ const handleMainPrompts = (repo, ans) => {
               });
             }
             if ( ans.main.toLowerCase() === "remove labels" ){
+              banner.removeLabels();
               doRemovePrompts(token, repo);
             }
           })
