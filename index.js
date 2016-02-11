@@ -99,6 +99,18 @@ const doRemovePrompts = ( token, repo ) => {
         });
       };
 
+const removeAllLabels = ( token, repo ) => {
+  octonode.client(token).get('/repos/' + repo + '/labels', (e, status, body) => {
+    let allLabels = body.map((label) => {
+      return { name: label.name, color: label.color };
+    });
+
+    gitLabel.remove( configGitLabel(repo, token), allLabels )
+      .then(console.log)
+      .catch(console.warn);
+  });
+};
+
 //  Promise-based check to see if we're even in a Git repo
 const isGitRepo = () => {
         return new Promise((res, rej) => {
@@ -177,6 +189,10 @@ const handleMainPrompts = (repo, ans) => {
             }
             if ( ans.main.toLowerCase() === "remove labels" ){
               doRemovePrompts(token, repo);
+            }
+
+            if ( ans.main.toLowerCase() === "remove all labels" ){
+              removeAllLabels(token, repo);
             }
           })
           .catch((msg)=>{
