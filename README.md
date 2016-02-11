@@ -19,7 +19,7 @@ git-labelmaker
 
 #### Token
 
-If it's the first time running it, you will be prompted for a GitHub token, which you can [generate over here](https://github.com/settings/tokens). You can reset your token later, but otherwise `git-labelmaker` will remember it for you.
+If it's the first time running it, you will be prompted for a GitHub token, which you can [generate over here](https://github.com/settings/tokens). You can reset your token later, but otherwise `git-labelmaker` will remember it for you. Your token must have `repo` permissions.
 
 #### Add Custom Labels
 
