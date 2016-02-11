@@ -105,9 +105,13 @@ const removeAllLabels = ( token, repo ) => {
       return { name: label.name, color: label.color };
     });
 
-    gitLabel.remove( configGitLabel(repo, token), allLabels )
-      .then(console.log)
-      .catch(console.warn);
+    if ( allLabels.length === 0 ) {
+      console.warn('There are no labels to delete for ' + repo + '.');
+    } else {
+      gitLabel.remove( configGitLabel(repo, token), allLabels )
+        .then(console.log)
+        .catch(console.warn);
+    }
   });
 };
 
