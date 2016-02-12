@@ -8,8 +8,9 @@ const fs                = require("fs"),
       gitLabel          = require("git-label");
 
 //    UTILS ARE STANDALONE METHODS WITH NO DEPENDENCIES
-const replaceAll        = require("./utils/replaceAll"),
-      banner            = require("./utils/banners");
+const banner            = require("./utils/banners"),
+      configGitLabel    = require("./utils/configGitLabel"),
+      replaceAll        = require("./utils/replaceAll");
 
 //    PROMPTS ARE THE PROMPTS ARRAYS FOR VARIOUS QUESTIONS
 const prompts           = {
@@ -124,14 +125,6 @@ const readGitConfig  = () => {
             res( data );
           })
         });
-      };
-//  Returns a config for gitLabel
-const configGitLabel = (repo, token) => {
-        return {
-          api:    'https://api.github.com',
-          repo:   repo,
-          token:  token
-        }
       };
 
 //    TODO: could be refactored to return the git.add as a promise..?
