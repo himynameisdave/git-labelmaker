@@ -21,8 +21,9 @@ const prompts           = {
 // //    MODULES ARE UTILS WITH DEPENDENCIES
 const readRepo          = require("./modules/readRepo"),
       setToken          = require("./modules/setToken"),
-      fetchToken        = require("./modules/fetchToken");
-
+      fetchToken        = require("./modules/fetchToken"),
+      isGitRepo         = require("./modules/isGitRepo"),
+      readGitConfig     = require("./modules/readGitConfig");
 
 
 //    A simple prompt util, returns a promise with the prompt answers
@@ -104,26 +105,6 @@ const doRemovePrompts = ( token, repo ) => {
             })
 
           });
-        });
-      };
-
-
-//  Promise-based check to see if we're even in a Git repo
-const isGitRepo = () => {
-        return new Promise((res, rej) => {
-          fs.readdir(process.cwd()+'/.git/', (e, files) => {
-            if (e) rej("Not a git repo!");
-            res(true);
-          })
-        });
-      };
-//  Promise-based reading the git config to find the repo
-const readGitConfig  = () => {
-        return new Promise((res, rej)=>{
-          fs.readFile( process.cwd()+'/.git/config', 'utf8', (e, data) => {
-            if (e) rej(e);
-            res( data );
-          })
         });
       };
 
