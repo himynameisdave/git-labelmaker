@@ -11,20 +11,20 @@ const fs                = require("fs"),
 const replaceAll        = require("./utils/replaceAll"),
       banner            = require("./utils/banners");
 
-//    MODULES ARE UTILS WITH DEPENDENCIES
-const readRepo          = require("./modules/readRepo"),
-      fetchToken        = require("./modules/fetchToken");
-      
 //    PROMPTS ARE THE PROMPTS ARRAYS FOR VARIOUS QUESTIONS
 const prompts           = {
         addCustom:        require("./prompts/addCustom"),
         mainMenu:         require("./prompts/mainMenu")
       };
 
+// //    MODULES ARE UTILS WITH DEPENDENCIES
+const readRepo          = require("./modules/readRepo"),
+      setToken          = require("./modules/setToken"),
+      fetchToken        = require("./modules/fetchToken");
+
 
 
 //    A simple prompt util, returns a promise with the prompt answers
-///   NOT IN USE
 const prompt = (prompts) => {
         return new Promise((res, rej)=>{
           iq.prompt(prompts, (answers) => {
@@ -46,22 +46,6 @@ const requestLabels = ( token, repo ) => {
       };
 
 
-//  Responsible for asking the user what their token is, and then storing it
-//  executed only if it can't be found!
-const setToken = (done) => {
-        iq.prompt([{
-            type: "input",
-            name: "token",
-            message: "What is your GitHub Access Token?",
-            default: "eg: 12345678..."
-        }], (answer) => {
-          fs.writeFile( __dirname+'/.token.json', JSON.stringify( { "token": answer.token }, null, 2 ), 'utf8', (e)=>{
-            if (e) throw e;
-            console.log("Stored new token!");
-            done(answer.token);
-          });
-        });
-      };
 //  Recursivly asks if you want to add another new label, then calls a callback when youre all done
 const doCustomLabelPrompts = ( newLabels, done ) => {
         iq.prompt( prompts.addCustom, ( answers ) => {
