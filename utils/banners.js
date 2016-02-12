@@ -11,6 +11,7 @@ const printBanner =  ( banner ) => {
 };
 
 module.exports = {
+  welcome:          printBanner("    Welcome to git-labelmaker    "),
   addCustom:        printBanner("       Adding Custom Labels      "),
   addFromPackage:   printBanner("    Adding Labels From Package   "),
   removeLabels:     printBanner("         Removing Labels         "),
