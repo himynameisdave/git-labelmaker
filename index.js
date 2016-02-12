@@ -1,29 +1,51 @@
 #!/usr/bin/env node
 "use strict";
 
-const fs = require("fs"),
-      iq = require("inquirer"),
+//    EXTERNAL DEPENDENCIES
+const fs                = require("fs"),
+      iq                = require("inquirer"),
       octonode          = require("octonode"),
-      gitLabel          = require("git-label"),
-      banner            = require("./components/banners"),
-      readRepo          = require("./components/read-repo"),
-      cleanup           = require("./components/remove-tmp-pkg"),
-      mainPrompts       = require("./components/main-prompts"),
-      customAddPrompts  = require("./components/add-prompts");
+      gitLabel          = require("git-label");
 
-//    TODO: this should be a util
-const replaceAll = (str, find, replace) => str.split(find).join(replace);
+//    UTILS ARE STANDALONE METHODS WITH NO DEPENDENCIES
+const replaceAll        = require("./utils/replaceAll"),
+      banner            = require("./utils/banners");
 
-//  Responsible for fetching and returning our config/token
-const fetchToken = () => {
+//    MODULES ARE UTILS WITH DEPENDENCIES
+const readRepo          = require("./modules/readRepo"),
+      fetchToken        = require("./modules/fetchToken");
+      
+//    PROMPTS ARE THE PROMPTS ARRAYS FOR VARIOUS QUESTIONS
+const prompts           = {
+        addCustom:        require("./prompts/addCustom"),
+        mainMenu:         require("./prompts/mainMenu")
+      };
+
+
+
+//    A simple prompt util, returns a promise with the prompt answers
+///   NOT IN USE
+const prompt = (prompts) => {
         return new Promise((res, rej)=>{
-          fs.readFile(__dirname+"/.token.json", 'utf8', (e, data) => {
-            if (e) rej("No token.json file found!");
-            if (JSON.parse(data).token === "") rej("No token found!");
-            res(JSON.parse(data).token);
+          iq.prompt(prompts, (answers) => {
+            if ( !answers ) rej(answers);
+            res(answers);
           });
         });
       };
+
+//    A simple util that promisifies our GitHub API call
+///   NOT IN USE
+const requestLabels = ( token, repo ) => {
+        return new Promise((res, rej)=>{
+          octonode.client(token).get('/repos/'+repo+'/labels', (e, status, body) => {
+            if (e) rej(e);
+            res(body);
+          });
+        });
+      };
+
+
 //  Responsible for asking the user what their token is, and then storing it
 //  executed only if it can't be found!
 const setToken = (done) => {
@@ -42,41 +64,13 @@ const setToken = (done) => {
       };
 //  Recursivly asks if you want to add another new label, then calls a callback when youre all done
 const doCustomLabelPrompts = ( newLabels, done ) => {
-        iq.prompt( customAddPrompts, ( answers ) => {
+        iq.prompt( prompts.addCustom, ( answers ) => {
           newLabels.push({ name: answers.labelName, color: answers.labelColor });
           if ( answers.addAnother ){
             doCustomLabelPrompts( newLabels, done );
           }else{
             done( newLabels );
           }
-        });
-      };
-
-const doPackageLabelPrompts = ( done ) => {
-        iq.prompt([
-          {
-            name: "type",
-            type: "list",
-            message: "Do you want to use a local package or choose from a list of common label packages?",
-            choices: [ "Local", "Packages" ]
-          },{
-            name: "pkgs",
-            type: "checkbox",
-            message: "Which packages would you like to use?",
-            choices: [
-              "git-label-packages:cla",
-              "git-label-packages:priority",
-              "git-label-packages:status",
-              "git-label-packages:type"
-            ],
-            when: (answers) => {
-              return answers.type.toLowerCase() === "packages";
-            }
-          }
-        ], (ans) => {
-          console.log(ans);
-          // if (ans.)
-          // done();
         });
       };
 
@@ -104,7 +98,7 @@ const doRemovePrompts = ( token, repo ) => {
             //  Tell the user what they're about to lose
             console.log("About to delete the following labels:")
             answers.removals.map((label)=>{
-              return " - "+label.name+"\n";
+              return " - "+label.name;
             }).forEach((prettyLabel)=>{
               console.log(prettyLabel);
             });
@@ -128,11 +122,12 @@ const doRemovePrompts = ( token, repo ) => {
         });
       };
 
+
 //  Promise-based check to see if we're even in a Git repo
 const isGitRepo = () => {
         return new Promise((res, rej) => {
           fs.readdir(process.cwd()+'/.git/', (e, files) => {
-            if (e) rej(false);
+            if (e) rej("Not a git repo!");
             res(true);
           })
         });
@@ -142,7 +137,7 @@ const readGitConfig  = () => {
         return new Promise((res, rej)=>{
           fs.readFile( process.cwd()+'/.git/config', 'utf8', (e, data) => {
             if (e) rej(e);
-            res( data );// split it at newlines
+            res( data );
           })
         });
       };
@@ -167,7 +162,8 @@ const handleMainPrompts = (repo, ans) => {
           banner.resetToken();
           //  process will end after new token is set
           return setToken((token) => {
-            iq.prompt( mainPrompts, handleMainPrompts.bind(null, repo));
+            banner.welcome();
+            iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, repo));
           });
         }
         //  if it's not to reset the token then we
@@ -214,7 +210,8 @@ const handleMainPrompts = (repo, ans) => {
           .catch((msg)=>{
             console.log(msg);
             setToken((token) => {
-              iq.prompt( mainPrompts, handleMainPrompts.bind(null, repo));
+              banner.welcome();
+              iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, repo));
             });
           });
       };
@@ -222,11 +219,11 @@ const handleMainPrompts = (repo, ans) => {
 //    LET'S DO IT
     Promise.all([ isGitRepo(), readGitConfig() ])
       .then(( values )=>{
-        let repo = readRepo(values[1].split("\n"));
-        iq.prompt( mainPrompts, handleMainPrompts.bind(null, repo));
+        let repo = readRepo(values[1]);
+        banner.welcome();
+        iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, repo));
       })
       .catch((e)=>{
-        console.warn(e);
         console.warn("Please run git-labelmaker from inside a git repo!")
         process.exit(1);
       });
