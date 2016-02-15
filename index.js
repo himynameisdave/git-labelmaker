@@ -171,24 +171,27 @@ const handleMainPrompts = (repo, ans) => {
           });
       };
 
-//    LET'S DO IT
-    Promise.all([ isGitRepo(), readGitConfig(), fetchToken() ])
-      .then(( values )=>{
-        let repo = readRepo(values[1]);
-        let token = values[2];
-        banner.welcome();
-        iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, repo));
-      })
-      .catch((e)=>{
-        console.warn(e.err);
-        if (e.id === "TOKEN") {
-          setToken((token) => {
-            // trade this for a "init" function that calls promise all
-            // banner.welcome();
-            // iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, repo));
-            process.exit(1);
-          });
-        } else {
-          process.exit(1);
-        }
-      });
+
+
+//    Kicks things off and arrows program to
+const gitLabelmaker = () => {
+
+  Promise.all([ isGitRepo(), readGitConfig(), fetchToken() ])
+  .then(( values )=>{
+    let repo = readRepo(values[1]);
+    let token = values[2];
+    banner.welcome();
+    iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, repo));  
+  })
+  .catch((e)=>{
+    console.warn(e.err);
+    if (e.id === "TOKEN") {
+      setToken(gitLabelmaker);
+    } else {
+      process.exit(1);
+    }
+  });
+
+};
+
+gitLabelmaker();
