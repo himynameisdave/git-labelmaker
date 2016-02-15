@@ -6,19 +6,16 @@ const fs                = require("fs"),
       iq                = require("inquirer"),
       octonode          = require("octonode"),
       gitLabel          = require("git-label");
-
 //    UTILS ARE STANDALONE METHODS WITH NO DEPENDENCIES
 const banner            = require("./utils/banners"),
       configGitLabel    = require("./utils/configGitLabel"),
       replaceAll        = require("./utils/replaceAll");
-
 //    PROMPTS ARE THE PROMPTS ARRAYS FOR VARIOUS QUESTIONS
 const prompts           = {
         addCustom:        require("./prompts/addCustom"),
         mainMenu:         require("./prompts/mainMenu")
       };
-
-// //    MODULES ARE UTILS WITH DEPENDENCIES
+//    MODULES ARE UTILS WITH DEPENDENCIES
 const readRepo          = require("./modules/readRepo"),
       setToken          = require("./modules/setToken"),
       fetchToken        = require("./modules/fetchToken"),
@@ -175,13 +172,23 @@ const handleMainPrompts = (repo, ans) => {
       };
 
 //    LET'S DO IT
-    Promise.all([ isGitRepo(), readGitConfig() ])
+    Promise.all([ isGitRepo(), readGitConfig(), fetchToken() ])
       .then(( values )=>{
         let repo = readRepo(values[1]);
+        let token = values[2];
         banner.welcome();
         iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, repo));
       })
       .catch((e)=>{
-        console.warn("Please run git-labelmaker from inside a git repo!")
-        process.exit(1);
+        console.warn(e.err);
+        if (e.id === "TOKEN") {
+          setToken((token) => {
+            // trade this for a "init" function that calls promise all
+            // banner.welcome();
+            // iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, repo));
+            process.exit(1);
+          });
+        } else {
+          process.exit(1);
+        }
       });
