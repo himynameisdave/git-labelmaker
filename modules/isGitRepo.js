@@ -5,11 +5,15 @@
  */
 "use strict";
 const fs = require("fs");
+const err = {
+  id:  "GIT_REPO",
+  err: "Please run git-labelmaker inside a git repository!"
+};
 
 module.exports = () => {
   return new Promise((res, rej) => {
     fs.readdir(process.cwd()+'/.git/', (e, files) => {
-      if (e) rej("Please run git-labelmaker inside a git repository!");
+      if (e) rej(err)
       res(true);
     })
   });

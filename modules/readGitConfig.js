@@ -5,11 +5,15 @@
  */
 "use strict";
 const fs = require("fs");
+const err = {
+  id:  "GIT_CONFIG",
+  err: "Unable to read git config file!"
+}
 
 module.exports = () => {
   return new Promise((res, rej)=>{
     fs.readFile( process.cwd()+'/.git/config', 'utf8', (e, data) => {
-      if (e) rej(e);
+      if (e) rej(err);
       res( data );
     })
   });
