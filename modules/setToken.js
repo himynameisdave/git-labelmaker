@@ -8,7 +8,7 @@
 const fs = require("fs");
 const iq = require("inquirer");
 
-const setToken = (done) => {
+module.exports = (done) => {
   iq.prompt([{
       type: "input",
       name: "token",
