@@ -9,10 +9,11 @@ const fs                = require("fs"),
 //    UTILS ARE STANDALONE METHODS WITH NO DEPENDENCIES
 const banner            = require("./utils/banners"),
       configGitLabel    = require("./utils/configGitLabel"),
-      replaceAll        = require("./utils/replaceAll");
+      removeAll         = require("./utils/removeAll");
 //    PROMPTS ARE THE PROMPTS ARRAYS FOR VARIOUS QUESTIONS
 const prompts           = {
         addCustom:        require("./prompts/addCustom"),
+        deleteConfirm:    require("./prompts/deleteConfirm"),
         mainMenu:         require("./prompts/mainMenu")
       };
 //    MODULES ARE UTILS WITH DEPENDENCIES
@@ -23,27 +24,26 @@ const readRepo          = require("./modules/readRepo"),
       readGitConfig     = require("./modules/readGitConfig");
 
 
-//    A simple prompt util, returns a promise with the prompt answers
-const prompt = (prompts) => {
-        return new Promise((res, rej)=>{
-          iq.prompt(prompts, (answers) => {
-            if ( !answers ) rej(answers);
-            res(answers);
-          });
-        });
-      };
-
-//    A simple util that promisifies our GitHub API call
-///   NOT IN USE
-const requestLabels = ( token, repo ) => {
-        return new Promise((res, rej)=>{
-          octonode.client(token).get('/repos/'+repo+'/labels', (e, status, body) => {
-            if (e) rej(e);
-            res(body);
-          });
-        });
-      };
-
+/////reset the token fn
+const resetToken = () => {
+  banner.resetToken();
+  return setToken(gitLabelmaker);
+};
+/////add custom labels fn
+const addCustom = (repo, token) => {
+  banner.addCustom();
+  return doCustomLabelPrompts( [], handleAddPrompts.bind(null, repo, token));
+};
+/////add labels from package
+const addFromPackage = (repo, token, path) => {
+  gitLabel.find( removeAll( path, [ "`", '"', "'" ] ) )
+    .then((newLabels)=>{
+      return gitLabel.add( configGitLabel(repo, token), newLabels )
+    })
+    .then(console.log)
+    .catch(console.warn);
+};
+/////
 
 //  Recursivly asks if you want to add another new label, then calls a callback when youre all done
 const doCustomLabelPrompts = ( newLabels, done ) => {
@@ -65,19 +65,15 @@ const doRemovePrompts = ( token, repo ) => {
             type:     "checkbox",
             message:  "Which labels would you like to remove?",
             choices:  body.map((label) => label.name),
+            validate: (removals) => {
+                return removals.length === 0 ? "Please select at least one label to remove." : true;
+            },
             filter:   (removals) => {
               return body.filter((label) => {
                 return removals.indexOf(label.name) > -1 ? { name: label.name, color: label.color } : false;
               });
             }
           }], (answers) => {
-            //  early return if no labels
-            //  TODO: this could be a check in the above prompt
-            if ( answers.removals.length === 0 ) {
-              console.log("No labels chosen to remove.");
-              return ;
-            };
-
             //  Tell the user what they're about to lose
             console.log("About to delete the following labels:")
             answers.removals.map((label)=>{
@@ -86,18 +82,13 @@ const doRemovePrompts = ( token, repo ) => {
               console.log(prettyLabel);
             });
             //  Ya sure ya wanna do this bud?
-            iq.prompt([{
-              name:     "youSure",
-              type:     "confirm",
-              message:  "Are you sure you want to delete these labels?",
-              default:  true
-            }], (confirmRemove) => {
+            iq.prompt([prompts.deleteConfirm], (confirmRemove) => {
               if ( confirmRemove.youSure ) {
                 gitLabel.remove( configGitLabel(repo, token), answers.removals )
                 .then(console.log)
                 .catch(console.warn);
               } else {
-                process.exit(1)
+                process.exit(1);
               }
             })
 
@@ -112,63 +103,41 @@ const handleAddPrompts = (repo, token, newLabels) => {
           .catch(console.warn);
       };
 
-const handleMainPrompts = (repo, ans) => {
+//    TODO: refactor into some kind of switch statement?
+const handleMainPrompts = (repo, token, ans) => {
         if ( ans.main.toLowerCase() === "reset token" ){
-          banner.resetToken();
-          //  process will end after new token is set
-          return setToken((token) => {
-            banner.welcome();
-            iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, repo));
+          resetToken();
+        }
+        if ( ans.main.toLowerCase() === "add custom labels" ){
+          addCustom(repo, token);
+        }
+        if ( ans.main.toLowerCase() === "add labels from package" ){
+          banner.addFromPackage();
+          let packagePath;
+          iq.prompt([{
+            name: "path",
+            type: "input",
+            message: "What is the path & name of the package you want to use? (eg: `packages/my-label-pkg.json`)",
+            validate: (path) => {
+              try {
+                if (path.indexOf(".json") < 0) throw "Not a JSON file";
+                packagePath = path.indexOf("/") === 0 ? path.replace("/","") : path;
+                packagePath = removeAll( packagePath, [ "`", '"', "'" ] );
+                if ( fs.statSync( process.cwd()+"/"+packagePath ) ){
+                  return true;
+                }
+              } catch (e){
+                return e;
+              }
+            }
+          }], (ans) => {
+            addFromPackage( repo, token, ans.path );
           });
         }
-        //  if it's not to reset the token then we
-        fetchToken()
-          .then((token)=>{
-            if ( ans.main.toLowerCase() === "add custom labels" ){
-              banner.addCustom();
-              return doCustomLabelPrompts( [], handleAddPrompts.bind(null, repo, token));
-            }
-            if ( ans.main.toLowerCase() === "add labels from package" ){
-              banner.addFromPackage();
-              let packagePath;
-              iq.prompt([{
-                name: "path",
-                type: "input",
-                message: "What is the path & name of the package you want to use? (eg: `packages/my-label-pkg.json`)",
-                validate: (path) => {
-                  try {
-                    if (path.indexOf(".json") < 0) throw "Not a JSON file";
-                    packagePath = path.indexOf("/") === 0 ? path.replace("/","") : path;
-                    //  TODO: make that fn loop over an array of replaces, or make it REMOVEALL and ditch that 3rd param
-                    packagePath = replaceAll( replaceAll( replaceAll(packagePath, '`', ""), '"', "" ), "'", "" )
-                    if ( fs.statSync( process.cwd()+"/"+packagePath ) ){
-                      return true;
-                    }
-                  } catch (e){
-                    return e;
-                  }
-                }
-              }], (ans) => {
-                gitLabel.find( replaceAll( replaceAll( replaceAll(ans.path, '`', ""), '"', "" ), "'", "" ) )
-                  .then((newLabels)=>{
-                    return gitLabel.add( configGitLabel(repo, token), newLabels )
-                  })
-                  .then(console.log)
-                  .catch(console.warn);
-              });
-            }
-            if ( ans.main.toLowerCase() === "remove labels" ){
-              banner.removeLabels();
-              doRemovePrompts(token, repo);
-            }
-          })
-          .catch((msg)=>{
-            console.log(msg);
-            setToken((token) => {
-              banner.welcome();
-              iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, repo));
-            });
-          });
+        if ( ans.main.toLowerCase() === "remove labels" ){
+          banner.removeLabels();
+          return doRemovePrompts(token, repo);
+        }
       };
 
 
@@ -181,7 +150,7 @@ const gitLabelmaker = () => {
     let repo = readRepo(values[1]);
     let token = values[2];
     banner.welcome();
-    iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, repo));  
+    iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, repo, token));
   })
   .catch((e)=>{
     console.warn(e.err);
@@ -195,3 +164,29 @@ const gitLabelmaker = () => {
 };
 
 gitLabelmaker();
+
+
+////////////////////
+//  CODE GRAVEYARD
+/////////////////////
+//    A simple prompt util, returns a promise with the prompt answers
+///   NOT IN USE
+const prompt = (prompts) => {
+        return new Promise((res, rej)=>{
+          iq.prompt(prompts, (answers) => {
+            if ( !answers ) rej(answers);
+            res(answers);
+          });
+        });
+      };
+
+//    A simple util that promisifies our GitHub API call
+///   NOT IN USE
+const requestLabels = ( token, repo ) => {
+        return new Promise((res, rej)=>{
+          octonode.client(token).get('/repos/'+repo+'/labels', (e, status, body) => {
+            if (e) rej(e);
+            res(body);
+          });
+        });
+      };
