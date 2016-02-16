@@ -1,5 +1,7 @@
+/**
+ *    The "Initial"/"Main" prompts
+ */
 "use strict";
-
 module.exports = [
   {
     type:     "list",
