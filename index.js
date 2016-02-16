@@ -140,4 +140,6 @@ const gitLabelmaker = () => {
         process.exit(1);
       }
     });
-}();// Is initiated after it is stored
+};
+
+gitLabelmaker();
