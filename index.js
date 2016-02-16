@@ -7,9 +7,11 @@ const fs                = require("fs"),
       octonode          = require("octonode"),
       gitLabel          = require("git-label");
 //    UTILS ARE STANDALONE METHODS WITH NO DEPENDENCIES
-const banner            = require("./utils/banners"),
+const alertDeletes      = require("./utils/alertDeletes"),
+      banner            = require("./utils/banners"),
       configGitLabel    = require("./utils/configGitLabel"),
-      removeAll         = require("./utils/removeAll");
+      removeAll         = require("./utils/removeAll"),
+      validateRemovals  = require("./utils/validateRemovals");
 //    PROMPTS ARE THE PROMPTS ARRAYS FOR VARIOUS QUESTIONS
 const prompts           = {
         addCustom:        require("./prompts/addCustom"),
@@ -21,7 +23,8 @@ const readRepo          = require("./modules/readRepo"),
       setToken          = require("./modules/setToken"),
       fetchToken        = require("./modules/fetchToken"),
       isGitRepo         = require("./modules/isGitRepo"),
-      readGitConfig     = require("./modules/readGitConfig");
+      readGitConfig     = require("./modules/readGitConfig"),
+      requestLabels     = require("./modules/requestLabels");
 
 
 /////reset the token fn
@@ -32,7 +35,11 @@ const resetToken = () => {
 /////add custom labels fn
 const addCustom = (repo, token) => {
   banner.addCustom();
-  return doCustomLabelPrompts( [], handleAddPrompts.bind(null, repo, token));
+  return doCustomLabelPrompts( [], (newLabels) => {
+    gitLabel.add( configGitLabel(repo, token), newLabels )
+      .then(console.log)
+      .catch(console.warn);
+  });
 };
 /////add labels from package
 const addFromPackage = (repo, token, path) => {
@@ -54,45 +61,6 @@ const doCustomLabelPrompts = ( newLabels, done ) => {
           }else{
             done( newLabels );
           }
-        });
-      };
-
-//    TODO: this function is ripe for some refactoring
-const doRemovePrompts = ( token, repo ) => {
-        octonode.client(token).get('/repos/'+repo+'/labels', (e, status, body) => {
-          iq.prompt([{
-            name:     "removals",
-            type:     "checkbox",
-            message:  "Which labels would you like to remove?",
-            choices:  body.map((label) => label.name),
-            validate: (removals) => {
-                return removals.length === 0 ? "Please select at least one label to remove." : true;
-            },
-            filter:   (removals) => {
-              return body.filter((label) => {
-                return removals.indexOf(label.name) > -1 ? { name: label.name, color: label.color } : false;
-              });
-            }
-          }], (answers) => {
-            //  Tell the user what they're about to lose
-            console.log("About to delete the following labels:")
-            answers.removals.map((label)=>{
-              return " - "+label.name;
-            }).forEach((prettyLabel)=>{
-              console.log(prettyLabel);
-            });
-            //  Ya sure ya wanna do this bud?
-            iq.prompt([prompts.deleteConfirm], (confirmRemove) => {
-              if ( confirmRemove.youSure ) {
-                gitLabel.remove( configGitLabel(repo, token), answers.removals )
-                .then(console.log)
-                .catch(console.warn);
-              } else {
-                process.exit(1);
-              }
-            })
-
-          });
         });
       };
 
@@ -136,7 +104,37 @@ const handleMainPrompts = (repo, token, ans) => {
         }
         if ( ans.main.toLowerCase() === "remove labels" ){
           banner.removeLabels();
-          return doRemovePrompts(token, repo);
+          requestLabels(repo, token)
+            .then((body)=>{
+              iq.prompt([{
+                name:     "removals",
+                type:     "checkbox",
+                message:  "Which labels would you like to remove?",
+                choices:  body.map((label) => label.name),
+                validate: validateRemovals,
+                filter:   (removals) => {
+                  return body.filter((label) => {
+                    return removals.indexOf(label.name) > -1 ? { name: label.name, color: label.color } : false;
+                  });
+                }
+              }], (answers) => {
+                //  Tell the user what they're about to lose
+                console.log("About to delete the following labels:")
+                alertDeletes();// alerts the list of labels to be removed
+
+                //  Ya sure ya wanna do this bud?
+                iq.prompt([prompts.deleteConfirm], (confirmRemove) => {
+                  if ( confirmRemove.youSure ) {
+                    gitLabel.remove( configGitLabel(repo, token), answers.removals )
+                      .then(console.log)
+                      .catch(console.warn);
+                  } else {
+                    gitLabelmaker();
+                  }
+                })
+              });
+            })
+            .catch(console.warn);
         }
       };
 
@@ -144,27 +142,25 @@ const handleMainPrompts = (repo, token, ans) => {
 
 //    Kicks things off and arrows program to
 const gitLabelmaker = () => {
-
+  //  Checks for three things at once, each will return a nice error obj if they fail
   Promise.all([ isGitRepo(), readGitConfig(), fetchToken() ])
-  .then(( values )=>{
-    let repo = readRepo(values[1]);
-    let token = values[2];
-    banner.welcome();
-    iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, repo, token));
-  })
-  .catch((e)=>{
-    console.warn(e.err);
-    if (e.id === "TOKEN") {
-      setToken(gitLabelmaker);
-    } else {
-      process.exit(1);
-    }
-  });
-
+    .then(( values )=>{
+      let repo = readRepo(values[1]);
+      let token = values[2];
+      banner.welcome();
+      iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, repo, token));
+    })
+    .catch((e)=>{
+      console.warn(e.err);
+      if (e.id === "TOKEN") {
+        setToken(gitLabelmaker);
+      } else {
+        process.exit(1);
+      }
+    });
 };
 
 gitLabelmaker();
-
 
 ////////////////////
 //  CODE GRAVEYARD
@@ -176,17 +172,6 @@ const prompt = (prompts) => {
           iq.prompt(prompts, (answers) => {
             if ( !answers ) rej(answers);
             res(answers);
-          });
-        });
-      };
-
-//    A simple util that promisifies our GitHub API call
-///   NOT IN USE
-const requestLabels = ( token, repo ) => {
-        return new Promise((res, rej)=>{
-          octonode.client(token).get('/repos/'+repo+'/labels', (e, status, body) => {
-            if (e) rej(e);
-            res(body);
           });
         });
       };
