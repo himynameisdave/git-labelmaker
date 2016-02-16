@@ -119,6 +119,17 @@ const handleMainPrompts = (repo, token, ans) => {
 
           case "remove all labels":
             banner.removeAllLabels();
+            requestLabels(repo, token)
+              .then((labels)=>{
+                if (labels.length !== 0) {
+                  removeLabels(repo, token, {
+                    removals: labels
+                  });
+                } else {
+                  console.log("No labels to remove.");
+                }
+              })
+              .catch(console.warn);
             break;
 
           default:
