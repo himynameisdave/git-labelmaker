@@ -117,6 +117,10 @@ const handleMainPrompts = (repo, token, ans) => {
               .catch(console.warn);
             break;
 
+          case "remove all labels":
+            banner.removeAllLabels();
+            break;
+
           default:
             gitLabelmaker();
         };
