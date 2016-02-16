@@ -30,6 +30,26 @@ const doCustomLabelPrompts = require("./modules/doCustomLabelPrompts")(prompts.a
       validateAddPackages  = require("./modules/validateAddPackages");
 
 
+//    Kicks things off, named so that it can be called at any time
+const gitLabelmaker = () => {
+  //  Checks for three things at once, each will return a nice error obj if they fail
+  Promise.all([ isGitRepo(), readGitConfig(), fetchToken() ])
+    .then(( values )=>{
+      let repo = readRepo(values[1]);
+      let token = values[2];
+      banner.welcome();
+      iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, repo, token));
+    })
+    .catch((e)=>{
+      console.warn(e.err);
+      if (e.id === "TOKEN") {
+        setToken(gitLabelmaker);
+      } else {
+        process.exit(1);
+      }
+    });
+  };
+
 //    resetToken function
 const resetToken = () => {
   banner.resetToken();
@@ -121,25 +141,5 @@ const handleMainPrompts = (repo, token, ans) => {
             gitLabelmaker();
         }
       };
-
-//    Kicks things off, named so that it can be called at any time
-const gitLabelmaker = () => {
-  //  Checks for three things at once, each will return a nice error obj if they fail
-  Promise.all([ isGitRepo(), readGitConfig(), fetchToken() ])
-    .then(( values )=>{
-      let repo = readRepo(values[1]);
-      let token = values[2];
-      banner.welcome();
-      iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, repo, token));
-    })
-    .catch((e)=>{
-      console.warn(e.err);
-      if (e.id === "TOKEN") {
-        setToken(gitLabelmaker);
-      } else {
-        process.exit(1);
-      }
-    });
-};
 
 gitLabelmaker();
