@@ -10,7 +10,7 @@ const alertDeletes         = require("./utils/alertDeletes"),
       banner               = require("./utils/banners"),
       configGitLabel       = require("./utils/configGitLabel"),
       filterRemovalLabels  = require("./utils/filterRemovalLabels"),
-      removeAll            = require("./utils/removeAll"),
+      removeAllFromStr     = require("./utils/removeAll"),
       validateRemovals     = require("./utils/validateRemovals");
 //    PROMPTS ARE THE PROMPTS ARRAYS FOR VARIOUS QUESTIONS
 const prompts              = {
@@ -68,7 +68,7 @@ const addCustom = (repo, token) => {
 
 //    addFromPackage function
 const addFromPackage = (repo, token, path) => {
-  gitLabel.find( removeAll( path, [ "`", '"', "'" ] ) )
+  gitLabel.find( removeAllFromStr( path, [ "`", '"', "'" ] ) )
     .then((newLabels)=>{
       return gitLabel.add( configGitLabel(repo, token), newLabels );
     })
