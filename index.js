@@ -50,7 +50,7 @@ const addCustom = (repo, token) => {
 const addFromPackage = (repo, token, path) => {
   gitLabel.find( removeAll( path, [ "`", '"', "'" ] ) )
     .then((newLabels)=>{
-      return gitLabel.add( configGitLabel(repo, token), newLabels )
+      return gitLabel.add( configGitLabel(repo, token), newLabels );
     })
     .then(console.log)
     .catch(console.warn);
@@ -59,13 +59,13 @@ const addFromPackage = (repo, token, path) => {
 //    removeLabels function
 const removeLabels = (repo, token, answers) => {
   //  Tell the user what they're about to lose
-  console.log("About to delete the following labels:")
+  console.log("About to delete the following labels:");
   alertDeletes(answers.removals);// alerts the list of labels to be removed
   //  Ya sure ya wanna do this bud?
   prompt(prompts.deleteConfirm)
     .then((confirmRemove)=>{
       if ( confirmRemove.youSure ) {
-        return gitLabel.remove( configGitLabel(repo, token), answers.removals )
+        return gitLabel.remove( configGitLabel(repo, token), answers.removals );
       }
       gitLabelmaker();
     })
@@ -119,7 +119,7 @@ const handleMainPrompts = (repo, token, ans) => {
 
           default:
             gitLabelmaker();
-        };
+        }
       };
 
 //    Kicks things off, named so that it can be called at any time
