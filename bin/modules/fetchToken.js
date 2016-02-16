@@ -11,7 +11,7 @@ const err = (message) => {
 
 module.exports = () => {
   return new Promise((res, rej)=>{
-    fs.readFile(__dirname+"/../.token.json", 'utf8', (e, data) => {
+    fs.readFile(__dirname+"/../../.token.json", 'utf8', (e, data) => {
       if (e || !data) rej(err("No token.json file found!"));
       if (JSON.parse(data).token === "") rej(err("No token found!"))
       res(JSON.parse(data).token);

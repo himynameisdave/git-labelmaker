@@ -9,7 +9,7 @@ const fs = require("fs");
 const prompt = require("./prompt");
 const writeToken = (token) => {
   return new Promise((res, rej)=>{
-    fs.writeFile( __dirname+'/../.token.json', JSON.stringify( { "token": token }, null, 2 ), 'utf8', (e)=>{
+    fs.writeFile( __dirname+'/../../.token.json', JSON.stringify( { "token": token }, null, 2 ), 'utf8', (e)=>{
       if (e) rej(e);
       console.log("Stored new token!");
       res(token);
