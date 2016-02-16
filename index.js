@@ -31,14 +31,14 @@ const doCustomLabelPrompts = require("./modules/doCustomLabelPrompts")(prompts.a
 
 
 //    Kicks things off, named so that it can be called at any time
-const gitLabelmaker = () => {
+const gitLabelmaker = (mainPromptCallback) => {
   //  Checks for three things at once, each will return a nice error obj if they fail
   Promise.all([ isGitRepo(), readGitConfig(), fetchToken() ])
     .then(( values )=>{
       let repo = readRepo(values[1]);
       let token = values[2];
       banner.welcome();
-      iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, repo, token));
+      iq.prompt( prompts.mainMenu, mainPromptCallback.bind(null, repo, token));
     })
     .catch((e)=>{
       console.warn(e.err);
@@ -77,7 +77,7 @@ const addFromPackage = (repo, token, path) => {
 };
 
 //    removeLabels function
-const removeLabels = (repo, token, answers) => {
+const removeLabels = (repo, token, mainPromptCallback, answers) => {
   //  Tell the user what they're about to lose
   console.log("About to delete the following labels:");
   alertDeletes(answers.removals);// alerts the list of labels to be removed
@@ -87,7 +87,7 @@ const removeLabels = (repo, token, answers) => {
       if ( confirmRemove.youSure ) {
         return gitLabel.remove( configGitLabel(repo, token), answers.removals );
       }
-      gitLabelmaker();
+      gitLabelmaker(mainPromptCallback);
     })
     .then(console.log)
     .catch(console.warn);
@@ -132,14 +132,14 @@ const handleMainPrompts = (repo, token, ans) => {
                 }]);
               })
               .then((answers)=>{
-                removeLabels(repo, token, answers);
+                removeLabels(repo, token, handleMainPrompts, answers);
               })
               .catch(console.warn);
             break;
 
           default:
-            gitLabelmaker();
+            gitLabelmaker(handleMainPrompts);
         }
       };
 
-gitLabelmaker();
+gitLabelmaker(handleMainPrompts);
