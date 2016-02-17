@@ -13,7 +13,7 @@ const Buttercup = require("buttercup");
 
 module.exports = () => {
   return new Promise((res, rej) => {
-    fs.exists(".git-labelmaker.token.bcup", (exists) => {
+    fs.exists(".git-labelmaker.bcup", (exists) => {
       if (!exists) {
         rej(err("No token found!"));
       }

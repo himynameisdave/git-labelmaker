@@ -12,7 +12,7 @@ const Buttercup = require("buttercup");
 
 const writeToken = (password, token) => {
   return new Promise((res, rej) => {
-    let datasource = new Buttercup.FileDatasource(".git-labelmaker.token.bcup");
+    let datasource = new Buttercup.FileDatasource(".git-labelmaker.bcup");
 
     let archive = Buttercup.Archive.createWithDefaults();
 
