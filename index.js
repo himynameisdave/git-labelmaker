@@ -4,7 +4,8 @@
 //    EXTERNAL DEPENDENCIES
 const fs                   = require("fs"),
       iq                   = require("inquirer"),
-      gitLabel             = require("git-label");
+      gitLabel             = require("git-label"),
+      Buttercup            = require("buttercup");
 //    UTILS ARE STANDALONE METHODS WITH NO DEPENDENCIES
 const alertDeletes         = require("./utils/alertDeletes"),
       banner               = require("./utils/banners"),
