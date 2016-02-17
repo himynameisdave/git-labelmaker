@@ -5,6 +5,7 @@
  */
 "use strict";
 const fs = require("fs");
+const prompt = require("./prompt");
 const err = (message) => {
   return { id: "TOKEN", err: message }
 };
@@ -16,14 +17,28 @@ module.exports = () => {
     fs.exists(".git-labelmaker.bcup", (exists) => {
       if (!exists) {
         rej(err("No token found!"));
+      } else {
+        prompt([{
+          type: "password",
+          name: "master_password",
+          message: "What is your master password?"
+        }])
+        .then((answer) => {
+          let datasource = new Buttercup.FileDatasource(".git-labelmaker.bcup");
+          datasource.load(answer.master_password)
+            .then((archive) => {
+              // This is only guaranteed to work on buttercup 0.14.0
+              // I will submit a PR to buttercup to make this work in a better way
+              let groups = archive.getGroups();
+              let group = groups.filter((g) => g._remoteObject.title === 'git-labelmaker')[0];
+              let token = group.getAttribute('token');
+              res(token);
+            })
+            .catch((e) => {
+              rej(err(e.message));
+            });
+        })
       }
-
     });
-    /*
-    fs.readFile(__dirname+"/../.token.json", 'utf8', (e, data) => {
-      if (e || !data) rej(err("No token.json file found!"));
-      if (JSON.parse(data).token === "") rej(err("No token found!"))
-      res(JSON.parse(data).token);
-    });*/
   });
 };
