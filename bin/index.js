@@ -120,21 +120,30 @@ const handleMainPrompts = (repo, token, ans) => {
 
           case "remove labels":
             banner.removeLabels();
-            requestLabels(repo, token)
-              .then((labels)=>{
-                return prompt([{
-                  name:     "removals",
-                  type:     "checkbox",
-                  message:  "Which labels would you like to remove?",
-                  choices:  labels.map((label) => label.name),
-                  validate: validateRemovals,
-                  filter:   filterRemovalLabels.bind(null, labels)
-                }]);
-              })
-              .then((answers)=>{
-                removeLabels(repo, token, handleMainPrompts, answers);
-              })
-              .catch(console.warn);
+            //  If there are no labels to be removed then we can skip this part
+              requestLabels(repo, token)
+                .then((labels)=>{
+                  if ( labels.length > 0 ){
+                    return prompt([{
+                      name:     "removals",
+                      type:     "checkbox",
+                      message:  "Which labels would you like to remove?",
+                      choices:  labels.map((label) => label.name),
+                      validate: validateRemovals,
+                      filter:   filterRemovalLabels.bind(null, labels)
+                    }]);
+                  } else {
+                    return new Error("This repo has no labels to remove!");
+                  }
+                })
+                .then((answers)=>{
+                  if (answers.removals){
+                    return removeLabels(repo, token, handleMainPrompts, answers);
+                  }
+                  console.log(answers);
+                  gitLabelmaker(handleMainPrompts);
+                })
+                .catch(console.warn);
             break;
 
           default:
