@@ -16,14 +16,11 @@ const writeToken = (password, token) => {
 
     let archive = Buttercup.Archive.createWithDefaults();
 
+    let group = archive.createGroup("git-labelmaker");
+
+    group.setAttribute('token', token);
+
     datasource.save(archive, password);
-    /*
-    fs.writeFile( __dirname+'/../.token.json', JSON.stringify( { "token": token }, null, 2 ), 'utf8', (e)=>{
-      if (e) rej(e);
-      console.log("Stored new token!");
-      res(token);
-    })
-    */
   });
 };
 
