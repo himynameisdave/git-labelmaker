@@ -21,6 +21,8 @@ const writeToken = (password, token) => {
     group.setAttribute('token', token);
 
     datasource.save(archive, password);
+
+    res(token);
   });
 };
 
