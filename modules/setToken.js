@@ -7,13 +7,23 @@
 "use strict";
 const fs = require("fs");
 const prompt = require("./prompt");
-const writeToken = (token) => {
-  return new Promise((res, rej)=>{
+
+const Buttercup = require("buttercup");
+
+const writeToken = (password, token) => {
+  return new Promise((res, rej) => {
+    let datasource = new Buttercup.FileDatasource(".git-labelmaker.token.bcup");
+
+    let archive = Buttercup.Archive.createWithDefaults();
+
+    datasource.save(archive, password);
+    /*
     fs.writeFile( __dirname+'/../.token.json', JSON.stringify( { "token": token }, null, 2 ), 'utf8', (e)=>{
       if (e) rej(e);
       console.log("Stored new token!");
       res(token);
     })
+    */
   });
 };
 
@@ -34,7 +44,7 @@ module.exports = (done) => {
     }
   }])
   .then((answer) => {
-    return writeToken(answer.token);
+    return writeToken(answer.master_password, answer.token);
   })
   .then((token)=>{
     done(token);
