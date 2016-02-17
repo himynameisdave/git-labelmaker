@@ -21,7 +21,10 @@ module.exports = (done) => {
   prompt([{
       type: "input",
       name: "token",
-      message: "What is your GitHub Access Token?"
+      message: "What is your GitHub Access Token?",
+      validate: (answer) => {
+        return (answer !== undefined && answer.length !== 0);
+      }
   }, {
     type: "password",
     name: "master_password",
