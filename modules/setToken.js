@@ -21,8 +21,14 @@ module.exports = (done) => {
   prompt([{
       type: "input",
       name: "token",
-      message: "What is your GitHub Access Token?",
-      default: "eg: 123456789..."
+      message: "What is your GitHub Access Token?"
+  }, {
+    type: "password",
+    name: "master_password",
+    message: "What is your master password, to keep your access token secure?",
+    when: (answer) => {
+      return (answer.token !== undefined && answer.token.length !== 0);
+    }
   }])
   .then((answer) => {
     return writeToken(answer.token);
