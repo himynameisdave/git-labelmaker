@@ -4,7 +4,8 @@
 //    EXTERNAL DEPENDENCIES
 const fs                   = require("fs"),
       iq                   = require("inquirer"),
-      gitLabel             = require("git-label");
+      gitLabel             = require("git-label"),
+      Buttercup            = require("buttercup");
 //    UTILS ARE STANDALONE METHODS WITH NO DEPENDENCIES
 const alertDeletes         = require("./utils/alertDeletes"),
       banner               = require("./utils/banners"),
@@ -31,14 +32,14 @@ const doCustomLabelPrompts = require("./modules/doCustomLabelPrompts")(prompts.a
 
 
 //    Kicks things off, named so that it can be called at any time
-const gitLabelmaker = (mainPromptCallback) => {
+const gitLabelmaker = () => {
   //  Checks for three things at once, each will return a nice error obj if they fail
   Promise.all([ isGitRepo(), readGitConfig(), fetchToken() ])
     .then(( values )=>{
       let repo = readRepo(values[1]);
       let token = values[2];
       banner.welcome();
-      iq.prompt( prompts.mainMenu, mainPromptCallback.bind(null, repo, token));
+      iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, repo, token));
     })
     .catch((e)=>{
       console.warn(e.err);

@@ -7,13 +7,16 @@
 "use strict";
 const fs = require("fs");
 const prompt = require("./prompt");
-const writeToken = (token) => {
-  return new Promise((res, rej)=>{
-    fs.writeFile( __dirname+'/../../.token.json', JSON.stringify( { "token": token }, null, 2 ), 'utf8', (e)=>{
-      if (e) rej(e);
-      console.log("Stored new token!");
-      res(token);
-    })
+const Buttercup = require("buttercup");
+
+const writeToken = (password, token) => {
+  return new Promise((res, rej) => {
+    let datasource = new Buttercup.FileDatasource(".git-labelmaker.bcup");
+    let archive = Buttercup.Archive.createWithDefaults();
+    let group = archive.createGroup("git-labelmaker");
+    group.setAttribute('token', token);
+    datasource.save(archive, password);
+    res(token);
   });
 };
 
@@ -22,10 +25,19 @@ module.exports = (done) => {
       type: "input",
       name: "token",
       message: "What is your GitHub Access Token?",
-      default: "eg: 123456789..."
+      validate: (answer) => {
+        return (answer !== undefined && answer.length !== 0);
+      }
+  }, {
+    type: "password",
+    name: "master_password",
+    message: "What is your master password, to keep your access token secure?",
+    when: (answer) => {
+      return (answer.token !== undefined && answer.token.length !== 0);
+    }
   }])
   .then((answer) => {
-    return writeToken(answer.token);
+    return writeToken(answer.master_password, answer.token);
   })
   .then((token)=>{
     done(token);
