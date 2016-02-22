@@ -9,6 +9,8 @@ Install `git-labelmaker` globally:
 npm i -g git-labelmaker
 ```
 
+Currently you **must be using version `>= 4.0.0` of node**, because we're using some fancy-shmancy ES6 stuff (Promises are too awesome to not use), and also because the dependant package `git-label` also currently requires `>= 4.0.0`. 
+
 ### Usage
 
 Using this bad boy is a breeze. First `cd` into your git repository, run the command and follow the prompts!
