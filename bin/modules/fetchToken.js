@@ -6,14 +6,18 @@
 "use strict";
 const fs = require("fs");
 const prompt = require("./prompt");
+const bcupPath = __dirname+"/../../.git-labelmaker.bcup";
 const Buttercup = require("buttercup");
 const err = (message) => {
   return { id: "TOKEN", err: message }
 };
 
-module.exports = () => {
+module.exports = (rememberedToken) => {
   return new Promise((res, rej) => {
-    fs.exists(".git-labelmaker.bcup", (exists) => {
+    if (rememberedToken){
+      return res(rememberedToken);
+    }
+    fs.exists(bcupPath, (exists) => {
       if (!exists) {
         rej(err("No token found!"));
       } else {
@@ -23,7 +27,7 @@ module.exports = () => {
           message: "What is your master password?"
         }])
         .then((answer) => {
-          let datasource = new Buttercup.FileDatasource(".git-labelmaker.bcup");
+          let datasource = new Buttercup.FileDatasource(bcupPath);
           return datasource.load(answer.master_password)
         })
         .then((archive) => {

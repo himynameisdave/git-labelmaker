@@ -7,11 +7,12 @@
 "use strict";
 const fs = require("fs");
 const prompt = require("./prompt");
+const bcupPath = __dirname+"/../../.git-labelmaker.bcup";
 const Buttercup = require("buttercup");
 
 const writeToken = (password, token) => {
   return new Promise((res, rej) => {
-    let datasource = new Buttercup.FileDatasource(".git-labelmaker.bcup");
+    let datasource = new Buttercup.FileDatasource(bcupPath);
     let archive = Buttercup.Archive.createWithDefaults();
     let group = archive.createGroup("git-labelmaker");
     group.setAttribute('token', token);

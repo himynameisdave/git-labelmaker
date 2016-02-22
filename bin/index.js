@@ -31,14 +31,14 @@ const doCustomLabelPrompts = require("./modules/doCustomLabelPrompts")(prompts.a
 
 
 //    Kicks things off, named so that it can be called at any time
-const gitLabelmaker = () => {
-  //  Checks for three things at once, each will return a nice error obj if they fail
-  Promise.all([ isGitRepo(), readGitConfig(), fetchToken() ])
+//    The params will sometimes come thru if we've just set the token, so if we got them we alter the call a lil...
+const gitLabelmaker = (token) => {
+  Promise.all([ isGitRepo(), readGitConfig(), fetchToken(token) ])
     .then(( values )=>{
-      let repo = readRepo(values[1]);
-      let token = values[2];
+      let _repo = readRepo(values[1]);
+      let _token = values[2];
       banner.welcome();
-      iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, repo, token));
+      iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, _repo, _token));
     })
     .catch((e)=>{
       console.warn(e.err);
