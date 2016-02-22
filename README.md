@@ -50,6 +50,7 @@ Feel free to contribute to the project by opening a [Pull Request](https://githu
 > - [`git-label-packages`](https://github.com/jasonbellamy/git-label-packages) is a really good set of default packages if you really want to level up your projects
 > - [`git-label-faces`](https://github.com/himynameisdave/git-label-faces) is a joke package set that you should totally never use for real
 > - [Sane GitHub Labels](https://medium.com/@dave_lunny/sane-github-labels-c5d2e6004b63) - an article I wrote about the importance of a good, rational labelling system in your projects
+
 ---
 
 *Created by [Dave Lunny](https://twitter.com/dave_lunny) in the wonderful year of 2016.*
