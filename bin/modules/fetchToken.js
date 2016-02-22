@@ -24,18 +24,17 @@ module.exports = () => {
         }])
         .then((answer) => {
           let datasource = new Buttercup.FileDatasource(".git-labelmaker.bcup");
-          datasource.load(answer.master_password)
-            .then((archive) => {
-              // This is only guaranteed to work on buttercup 0.14.0
-              // I will submit a PR to buttercup to make this work in a better way
-              let groups = archive.getGroups();
-              let group = groups.filter((g) => g._remoteObject.title === 'git-labelmaker')[0];
-              let token = group.getAttribute('token');
-              res(token);
-            })
-            .catch((e) => {
-              rej(err(e.message));
-            });
+          return datasource.load(answer.master_password)
+        })
+        .then((archive) => {
+          // This is only guaranteed to work on buttercup 0.14.0, awaiting PR in buttercup
+          let groups = archive.getGroups();
+          let group = groups.filter((g) => g._remoteObject.title === 'git-labelmaker')[0];
+          let token = group.getAttribute('token');
+          res(token);
+        })
+        .catch((e)=>{
+          console.error(err(e.message));
         })
       }
     });
