@@ -1,6 +1,6 @@
 {
   "name": "git-labelmaker",
-  "version": "0.7.0",
+  "version": "0.7.1-alpha",
   "description": "Create git labels from the command line using git-label!",
   "main": "index.js",
   "scripts": {
