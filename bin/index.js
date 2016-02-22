@@ -77,7 +77,7 @@ const addFromPackage = (repo, token, path) => {
 };
 
 //    removeLabels function
-const removeLabels = (repo, token, mainPromptCallback, answers) => {
+const removeLabels = (repo, token, answers) => {
   //  Tell the user what they're about to lose
   console.log("About to delete the following labels:");
   alertDeletes(answers.removals);// alerts the list of labels to be removed
@@ -87,7 +87,7 @@ const removeLabels = (repo, token, mainPromptCallback, answers) => {
       if ( confirmRemove.youSure ) {
         return gitLabel.remove( configGitLabel(repo, token), answers.removals );
       }
-      gitLabelmaker(mainPromptCallback);
+      gitLabelmaker();
     })
     .then(console.log)
     .catch(console.warn);
@@ -96,6 +96,11 @@ const removeLabels = (repo, token, mainPromptCallback, answers) => {
 //    Callback for the main prompts, handles program flow
 const handleMainPrompts = (repo, token, ans) => {
         switch ( ans.main.toLowerCase() ) {
+          case "quit":
+            banner.seeYa();
+            process.exit(1);
+            break;
+
           case "reset token":
             resetToken();
             break;
@@ -138,17 +143,17 @@ const handleMainPrompts = (repo, token, ans) => {
                 })
                 .then((answers)=>{
                   if (answers.removals){
-                    return removeLabels(repo, token, handleMainPrompts, answers);
+                    return removeLabels(repo, token, answers);
                   }
                   console.log(answers);
-                  gitLabelmaker(handleMainPrompts);
+                  gitLabelmaker();
                 })
                 .catch(console.warn);
             break;
 
           default:
-            gitLabelmaker(handleMainPrompts);
+            gitLabelmaker();
         }
       };
 
-gitLabelmaker(handleMainPrompts);
+gitLabelmaker();
