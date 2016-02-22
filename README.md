@@ -17,9 +17,13 @@ Using this bad boy is a breeze. First `cd` into your git repository, run the com
 git-labelmaker
 ```
 
+![Preview of git-labelmaker](http://i.imgur.com/UYSjdNw.png)
+
 #### Token
 
-If it's the first time running it, you will be prompted for a GitHub token, which you can [generate over here](https://github.com/settings/tokens). You can reset your token later, but otherwise `git-labelmaker` will remember it for you. Your token must have `repo` permissions.
+To interact with the GitHub API, you will need your own access token, which you can [generate over here](https://github.com/settings/tokens). Make sure your token has `repo` permissions.
+
+Instead of having to enter your token each time, `git-labelmaker` will remember it and keep it secure for you while you instead only need to remember a password you create. You can make your password whatever you like - passwords are easier to remember than tokens!
 
 #### Add Custom Labels
 

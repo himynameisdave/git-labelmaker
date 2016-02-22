@@ -15,5 +15,6 @@ module.exports = {
   addCustom:        printBanner("       Adding Custom Labels      "),
   addFromPackage:   printBanner("    Adding Labels From Package   "),
   removeLabels:     printBanner("         Removing Labels         "),
-  resetToken:       printBanner("         Resetting Token         ")
+  resetToken:       printBanner("         Resetting Token         "),
+  seeYa:            printBanner("            See Ya!              ")
 };

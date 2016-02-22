@@ -10,7 +10,7 @@ const alertDeletes         = require("./utils/alertDeletes"),
       banner               = require("./utils/banners"),
       configGitLabel       = require("./utils/configGitLabel"),
       filterRemovalLabels  = require("./utils/filterRemovalLabels"),
-      removeAll            = require("./utils/removeAll"),
+      removeAllFromStr     = require("./utils/removeAll"),
       validateRemovals     = require("./utils/validateRemovals");
 //    PROMPTS ARE THE PROMPTS ARRAYS FOR VARIOUS QUESTIONS
 const prompts              = {
@@ -31,14 +31,14 @@ const doCustomLabelPrompts = require("./modules/doCustomLabelPrompts")(prompts.a
 
 
 //    Kicks things off, named so that it can be called at any time
-const gitLabelmaker = (mainPromptCallback) => {
-  //  Checks for three things at once, each will return a nice error obj if they fail
-  Promise.all([ isGitRepo(), readGitConfig(), fetchToken() ])
+//    The params will sometimes come thru if we've just set the token, so if we got them we alter the call a lil...
+const gitLabelmaker = (token) => {
+  Promise.all([ isGitRepo(), readGitConfig(), fetchToken(token) ])
     .then(( values )=>{
-      let repo = readRepo(values[1]);
-      let token = values[2];
+      let _repo = readRepo(values[1]);
+      let _token = values[2];
       banner.welcome();
-      iq.prompt( prompts.mainMenu, mainPromptCallback.bind(null, repo, token));
+      iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, _repo, _token));
     })
     .catch((e)=>{
       console.warn(e.err);
@@ -68,7 +68,7 @@ const addCustom = (repo, token) => {
 
 //    addFromPackage function
 const addFromPackage = (repo, token, path) => {
-  gitLabel.find( removeAll( path, [ "`", '"', "'" ] ) )
+  gitLabel.find( removeAllFromStr( path, [ "`", '"', "'" ] ) )
     .then((newLabels)=>{
       return gitLabel.add( configGitLabel(repo, token), newLabels );
     })
@@ -77,7 +77,7 @@ const addFromPackage = (repo, token, path) => {
 };
 
 //    removeLabels function
-const removeLabels = (repo, token, mainPromptCallback, answers) => {
+const removeLabels = (repo, token, answers) => {
   //  Tell the user what they're about to lose
   console.log("About to delete the following labels:");
   alertDeletes(answers.removals);// alerts the list of labels to be removed
@@ -87,7 +87,7 @@ const removeLabels = (repo, token, mainPromptCallback, answers) => {
       if ( confirmRemove.youSure ) {
         return gitLabel.remove( configGitLabel(repo, token), answers.removals );
       }
-      gitLabelmaker(mainPromptCallback);
+      gitLabelmaker();
     })
     .then(console.log)
     .catch(console.warn);
@@ -96,6 +96,11 @@ const removeLabels = (repo, token, mainPromptCallback, answers) => {
 //    Callback for the main prompts, handles program flow
 const handleMainPrompts = (repo, token, ans) => {
         switch ( ans.main.toLowerCase() ) {
+          case "quit":
+            banner.seeYa();
+            process.exit(1);
+            break;
+
           case "reset token":
             resetToken();
             break;
@@ -120,26 +125,35 @@ const handleMainPrompts = (repo, token, ans) => {
 
           case "remove labels":
             banner.removeLabels();
-            requestLabels(repo, token)
-              .then((labels)=>{
-                return prompt([{
-                  name:     "removals",
-                  type:     "checkbox",
-                  message:  "Which labels would you like to remove?",
-                  choices:  labels.map((label) => label.name),
-                  validate: validateRemovals,
-                  filter:   filterRemovalLabels.bind(null, labels)
-                }]);
-              })
-              .then((answers)=>{
-                removeLabels(repo, token, handleMainPrompts, answers);
-              })
-              .catch(console.warn);
+            //  If there are no labels to be removed then we can skip this part
+              requestLabels(repo, token)
+                .then((labels)=>{
+                  if ( labels.length > 0 ){
+                    return prompt([{
+                      name:     "removals",
+                      type:     "checkbox",
+                      message:  "Which labels would you like to remove?",
+                      choices:  labels.map((label) => label.name),
+                      validate: validateRemovals,
+                      filter:   filterRemovalLabels.bind(null, labels)
+                    }]);
+                  } else {
+                    return new Error("This repo has no labels to remove!");
+                  }
+                })
+                .then((answers)=>{
+                  if (answers.removals){
+                    return removeLabels(repo, token, answers);
+                  }
+                  console.log(answers);
+                  gitLabelmaker();
+                })
+                .catch(console.warn);
             break;
 
           default:
-            gitLabelmaker(handleMainPrompts);
+            gitLabelmaker();
         }
       };
 
-gitLabelmaker(handleMainPrompts);
+gitLabelmaker();
