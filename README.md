@@ -1,4 +1,6 @@
 ## :flags: git-labelmaker
+
+[![Join the chat at https://gitter.im/himynameisdave/git-labelmaker](https://badges.gitter.im/himynameisdave/git-labelmaker.svg)](https://gitter.im/himynameisdave/git-labelmaker?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Edit GitHub labels from the command line using **`git-labelmaker`**! You can easily add or remove GitHub labels, making it easier for your projects to adhere to a [sane labelling](https://medium.com/@dave_lunny/sane-github-labels-c5d2e6004b63) scheme.
 
 ### Install
