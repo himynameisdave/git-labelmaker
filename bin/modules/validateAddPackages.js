@@ -6,15 +6,7 @@
 "use strict";
 const fs = require("fs");
 const removeAll = require("../utils/removeAll");
-
-const isJsonString = function (str) {
-    try {
-        JSON.parse(str);
-    } catch (e) {
-        return false;
-    }
-    return true;
-};
+const isJsonString = require("../utils/isJsonString");
 
 module.exports = (path) => {
   try {
