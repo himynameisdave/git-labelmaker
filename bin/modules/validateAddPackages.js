@@ -8,26 +8,27 @@ const fs = require("fs");
 const removeAll = require("../utils/removeAll");
 const isJsonString = require("../utils/isJsonString");
 
-module.exports = (path) => {
+//  Not using arrows bc it will mess up "this" context
+module.exports = function (path) {
+  // Declare function as asynchronous, and save the done callback
+  let done = this.async();
   try {
-    if (path.indexOf(".json") < 0) throw "Not a JSON file";
+    if (path.indexOf(".json") < 0) {
+      done("Not a JSON file");
+      return;
+    }
     let packagePath = path.indexOf("/") === 0 ? path.replace("/","") : path;
     packagePath = removeAll( packagePath, [ "`", '"', "'" ] );
-
     let fullPath = process.cwd() + "/" + packagePath;
-
     fs.readFile(fullPath, (err, data) => {
-      if (err) {
-        throw err;
-      }
-
+      if (err){ done(err); return; }
       if (isJsonString(data)) {
-        return true;
+        done(true);
       }
-
-      throw "Not a valid JSON file";
+      done("Not a valid JSON file");
     });
   } catch (e){
-    return e;
+    done(e);
+    return;
   }
 };
