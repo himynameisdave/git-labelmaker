@@ -35,7 +35,7 @@ You can add your own labels one at a time. You will be prompted for your new lab
 
 If you have a labels package in your current directory that you would like to use for adding labels, just supply the path and name of that file. So like if it's at the root of the current directory, just `labels.json`.
 
-It must be a valid `.json` file, and must match the expected format. Check out [these really good ones](https://github.com/jasonbellamy/git-label-packages/tree/master/packages) if you need a template.
+It must be a valid, parsable JSON file (although the extension doesn't matter). Check out [these really good ones](https://github.com/jasonbellamy/git-label-packages/tree/master/packages) if you need a template.
 
 #### Remove Labels
 
