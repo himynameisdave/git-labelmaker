@@ -7,14 +7,34 @@
 const fs = require("fs");
 const removeAll = require("../utils/removeAll");
 
+const isJsonString = function (str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+};
+
 module.exports = (path) => {
   try {
     if (path.indexOf(".json") < 0) throw "Not a JSON file";
     let packagePath = path.indexOf("/") === 0 ? path.replace("/","") : path;
     packagePath = removeAll( packagePath, [ "`", '"', "'" ] );
-    if ( fs.statSync( process.cwd()+"/"+packagePath ) ){
-      return true;
-    }
+
+    let fullPath = process.cwd() + "/" + packagePath;
+
+    fs.readFile(fullPath, (err, data) => {
+      if (err) {
+        throw err;
+      }
+
+      if (isJsonString(data)) {
+        return true;
+      }
+
+      throw "Not a valid JSON file";
+    });
   } catch (e){
     return e;
   }
