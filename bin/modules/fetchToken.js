@@ -26,6 +26,14 @@ module.exports = (rememberedToken) => {
         rej(err("No token found!"));
       } else {
         prompt([{
+          type:     "list",
+          name:     "token_action",
+          message:  "You have a token stored in .git-labelmaker.bcup.\nWould you like to unlock this, or create a new token?",
+          choices:  [ "Unlock existing token", "Create new token", "Quit" ]
+        }]);
+
+        /*
+        prompt([{
           type: "password",
           name: "master_password",
           message: "What is your master password?"
@@ -45,7 +53,7 @@ module.exports = (rememberedToken) => {
         })
         .catch((e)=>{
           rej(err(e.message));
-        })
+      })*/
       }
     });
   });
