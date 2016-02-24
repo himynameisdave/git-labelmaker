@@ -41,12 +41,19 @@ const gitLabelmaker = (token) => {
       iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, _repo, _token));
     })
     .catch((e)=>{
-      console.warn(e.err);
       if (e.id === "TOKEN") {
         setToken(gitLabelmaker);
-      } else {
-        process.exit(1);
+        return;
       }
+
+      if (e.id === "QUIT") {
+        banner.seeYa();
+        process.exit(0);
+        return;
+      }
+
+      console.warn(e);
+      process.exit(1);
     });
   };
 
