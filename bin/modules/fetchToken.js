@@ -43,7 +43,10 @@ module.exports = (rememberedToken) => {
                 console.log("create new");
                 break;
               default:
-                console.log("quit");
+                rej({
+                    id: "QUIT",
+                    message: "User quit the application"
+                });
           }
         });
 
