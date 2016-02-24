@@ -37,7 +37,27 @@ module.exports = (rememberedToken) => {
         .then((answer) => {
           switch(answer.token_action) {
               case UNLOCK_EXISTING_TOKEN:
-                console.log("unlock existing");
+                  prompt([{
+                    type: "password",
+                    name: "master_password",
+                    message: "What is your master password?"
+                  }])
+                  .then((answer) => {
+                    let datasource = new Buttercup.FileDatasource(bcupPath);
+                    datasource.load(answer.master_password).then((archive) => {
+                      // This is only guaranteed to work on buttercup 0.14.0, awaiting PR in buttercup
+                      let groups = archive.getGroups();
+                      let group = groups.filter((g) => g._remoteObject.title === 'git-labelmaker')[0];
+                      let token = group.getAttribute('token');
+                      res(token);
+                    })
+                    .catch((e)=>{
+                      rej(err(e.message));
+                    })
+                  })
+                  .catch((e)=>{
+                    rej(err(e.message));
+                })
                 break;
               case CREATE_NEW_TOKEN:
                 fs.unlink(bcupPath, () => {
@@ -51,29 +71,6 @@ module.exports = (rememberedToken) => {
                 });
           }
         });
-
-        /*
-        prompt([{
-          type: "password",
-          name: "master_password",
-          message: "What is your master password?"
-        }])
-        .then((answer) => {
-          let datasource = new Buttercup.FileDatasource(bcupPath);
-          datasource.load(answer.master_password).then((archive) => {
-            // This is only guaranteed to work on buttercup 0.14.0, awaiting PR in buttercup
-            let groups = archive.getGroups();
-            let group = groups.filter((g) => g._remoteObject.title === 'git-labelmaker')[0];
-            let token = group.getAttribute('token');
-            res(token);
-          })
-          .catch((e)=>{
-            rej(err(e.message));
-          })
-        })
-        .catch((e)=>{
-          rej(err(e.message));
-      })*/
       }
     });
   });
