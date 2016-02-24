@@ -43,9 +43,11 @@ const gitLabelmaker = (token) => {
     .catch((e)=>{
       if (e.id === "TOKEN") {
         setToken(gitLabelmaker);
-      } else {
-        process.exit(1);
+        return;
       }
+
+      console.warn(e);
+      process.exit(1);
     });
   };
 
