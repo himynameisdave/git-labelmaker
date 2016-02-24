@@ -5,10 +5,7 @@
  */
 "use strict";
 const fs = require("fs");
-const err = {
-  id:  "GIT_CONFIG",
-  err: "Unable to read git config file!"
-}
+const err = require("../utils/errorGenerator")("GIT_CONFIG")("Unable to read git config file!")
 
 module.exports = () => {
   return new Promise((res, rej)=>{

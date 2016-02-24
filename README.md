@@ -28,6 +28,8 @@ To interact with the GitHub API, you will need your own access token, which you 
 
 Instead of having to enter your token each time, `git-labelmaker` will remember it and keep it secure for you while you instead only need to remember a password you create. You can make your password whatever you like - passwords are easier to remember than tokens!
 
+Currently, `git-labelmaker` only supports calling the public GitHub API. If you are using GitHub Enterprise and have a custom API path, you might want to check out [`git-label`](https://github.com/jasonbellamy/git-label) instead.
+
 #### Add Custom Labels
 
 You can add your own labels one at a time. You will be prompted for your new label's text and color. Include the `#` in front of your 3 or 6 digit hex color. Add as many as you like!
