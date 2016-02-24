@@ -25,12 +25,27 @@ module.exports = (rememberedToken) => {
       if (!exists) {
         rej(err("No token found!"));
       } else {
+        const UNLOCK_EXISTING_TOKEN = "Unlock existing token";
+        const CREATE_NEW_TOKEN = "Create new token";
+
         prompt([{
           type:     "list",
           name:     "token_action",
           message:  "You have a token stored in .git-labelmaker.bcup.\nWould you like to unlock this, or create a new token?",
-          choices:  [ "Unlock existing token", "Create new token", "Quit" ]
-        }]);
+          choices:  [ UNLOCK_EXISTING_TOKEN, CREATE_NEW_TOKEN, "Quit" ]
+        }])
+        .then((answer) => {
+          switch(answer.token_action) {
+              case UNLOCK_EXISTING_TOKEN:
+                console.log("unlock existing");
+                break;
+              case CREATE_NEW_TOKEN:
+                console.log("create new");
+                break;
+              default:
+                console.log("quit");
+          }
+        });
 
         /*
         prompt([{
