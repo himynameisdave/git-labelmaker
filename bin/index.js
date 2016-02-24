@@ -41,12 +41,19 @@ const gitLabelmaker = (token) => {
       iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, _repo, _token));
     })
     .catch((e)=>{
-      console.warn(e.err);
       if (e.id === "TOKEN") {
         setToken(gitLabelmaker);
-      } else {
-        process.exit(1);
+        return;
       }
+
+      if (e.id === "QUIT") {
+        banner.seeYa();
+        process.exit(0);
+        return;
+      }
+
+      console.warn(e);
+      process.exit(1);
     });
   };
 
@@ -95,65 +102,66 @@ const removeLabels = (repo, token, answers) => {
 
 //    Callback for the main prompts, handles program flow
 const handleMainPrompts = (repo, token, ans) => {
-        switch ( ans.main.toLowerCase() ) {
-          case "quit":
-            banner.seeYa();
-            process.exit(1);
-            break;
+  switch ( ans.main.toLowerCase() ) {
+    case "quit":
+      banner.seeYa();
+      process.exit(1);
+      break;
 
-          case "reset token":
-            resetToken();
-            break;
+    case "reset token":
+      resetToken();
+      break;
 
-          case "add custom labels":
-            addCustom(repo, token);
-            break;
+    case "add custom labels":
+      addCustom(repo, token);
+      break;
 
-          case "add labels from package":
-            banner.addFromPackage();
-            prompt([{
-              name:    "path",
-              type:    "input",
-              message: "What is the path & name of the package you want to use? (eg: `packages/my-label-pkg.json`)",
-              validate: validateAddPackages
-            }])
-              .then((ans)=>{
-                return addFromPackage( repo, token, ans.path );
-              })
-              .catch(console.warn);
-            break;
+    case "add labels from package":
+      banner.addFromPackage();
+      prompt([{
+        name:    "path",
+        type:    "input",
+        message: "What is the path & name of the package you want to use? (eg: `packages/my-label-pkg.json`)",
+        validate: validateAddPackages
+      }])
+        .then((ans)=>{
+          return addFromPackage( repo, token, ans.path );
+        })
+        .catch(console.warn);
+      break;
 
-          case "remove labels":
-            banner.removeLabels();
-            //  If there are no labels to be removed then we can skip this part
-              requestLabels(repo, token)
-                .then((labels)=>{
-                  if ( labels.length > 0 ){
-                    return prompt([{
-                      name:     "removals",
-                      type:     "checkbox",
-                      message:  "Which labels would you like to remove?",
-                      choices:  labels.map((label) => label.name),
-                      validate: validateRemovals,
-                      filter:   filterRemovalLabels.bind(null, labels)
-                    }]);
-                  } else {
-                    return new Error("This repo has no labels to remove!");
-                  }
-                })
-                .then((answers)=>{
-                  if (answers.removals){
-                    return removeLabels(repo, token, answers);
-                  }
-                  console.log(answers);
-                  gitLabelmaker();
-                })
-                .catch(console.warn);
-            break;
-
-          default:
+    case "remove labels":
+      banner.removeLabels();
+      //  If there are no labels to be removed then we can skip this part
+        requestLabels(repo, token)
+          .then((labels)=>{
+            if ( labels.length > 0 ){
+              return prompt([{
+                name:     "removals",
+                type:     "checkbox",
+                message:  "Which labels would you like to remove?",
+                choices:  labels.map((label) => label.name),
+                validate: validateRemovals,
+                filter:   filterRemovalLabels.bind(null, labels)
+              }]);
+            } else {
+              return new Error("This repo has no labels to remove!");
+            }
+          })
+          .then((answers)=>{
+            if (answers.removals){
+              return removeLabels(repo, token, answers);
+            }
+            console.log(answers);
             gitLabelmaker();
-        }
-      };
+          })
+          .catch(console.warn);
+      break;
 
+    default:
+      gitLabelmaker();
+  }
+};
+
+//  Begin our application
 gitLabelmaker();

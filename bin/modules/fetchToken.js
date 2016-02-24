@@ -25,27 +25,52 @@ module.exports = (rememberedToken) => {
       if (!exists) {
         rej(err("No token found!"));
       } else {
+        const UNLOCK_EXISTING_TOKEN = "Unlock existing token";
+        const CREATE_NEW_TOKEN = "Create new token";
+
         prompt([{
-          type: "password",
-          name: "master_password",
-          message: "What is your master password?"
+          type:     "list",
+          name:     "token_action",
+          message:  "You have a token stored in .git-labelmaker.bcup.\nWould you like to unlock this, or create a new token?",
+          choices:  [ UNLOCK_EXISTING_TOKEN, CREATE_NEW_TOKEN, "Quit" ]
         }])
         .then((answer) => {
-          let datasource = new Buttercup.FileDatasource(bcupPath);
-          datasource.load(answer.master_password).then((archive) => {
-            // This is only guaranteed to work on buttercup 0.14.0, awaiting PR in buttercup
-            let groups = archive.getGroups();
-            let group = groups.filter((g) => g._remoteObject.title === 'git-labelmaker')[0];
-            let token = group.getAttribute('token');
-            res(token);
-          })
-          .catch((e)=>{
-            rej(err(e.message));
-          })
-        })
-        .catch((e)=>{
-          rej(err(e.message));
-        })
+          switch(answer.token_action) {
+              case UNLOCK_EXISTING_TOKEN:
+                  prompt([{
+                    type: "password",
+                    name: "master_password",
+                    message: "What is your master password?"
+                  }])
+                  .then((answer) => {
+                    let datasource = new Buttercup.FileDatasource(bcupPath);
+                    datasource.load(answer.master_password).then((archive) => {
+                      // This is only guaranteed to work on buttercup 0.14.0, awaiting PR in buttercup
+                      let groups = archive.getGroups();
+                      let group = groups.filter((g) => g._remoteObject.title === 'git-labelmaker')[0];
+                      let token = group.getAttribute('token');
+                      res(token);
+                    })
+                    .catch((e)=>{
+                      rej(err(e.message));
+                    })
+                  })
+                  .catch((e)=>{
+                    rej(err(e.message));
+                })
+                break;
+              case CREATE_NEW_TOKEN:
+                fs.unlink(bcupPath, () => {
+                    rej(err(CREATE_NEW_TOKEN));
+                });
+                break;
+              default:
+                rej({
+                    id: "QUIT",
+                    message: "User quit the application"
+                });
+          }
+        });
       }
     });
   });
