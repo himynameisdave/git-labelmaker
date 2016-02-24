@@ -47,6 +47,7 @@ const gitLabelmaker = (token) => {
       }
 
       if (e.id === "QUIT") {
+        banner.seeYa();
         process.exit(0);
         return;
       }
