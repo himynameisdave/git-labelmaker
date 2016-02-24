@@ -40,7 +40,9 @@ module.exports = (rememberedToken) => {
                 console.log("unlock existing");
                 break;
               case CREATE_NEW_TOKEN:
-                console.log("create new");
+                fs.unlink(bcupPath, () => {
+                    rej(err(CREATE_NEW_TOKEN));
+                });
                 break;
               default:
                 rej({
