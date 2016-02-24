@@ -41,7 +41,6 @@ const gitLabelmaker = (token) => {
       iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, _repo, _token));
     })
     .catch((e)=>{
-      console.warn(e.err);
       if (e.id === "TOKEN") {
         setToken(gitLabelmaker);
       } else {
