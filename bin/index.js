@@ -46,6 +46,11 @@ const gitLabelmaker = (token) => {
         return;
       }
 
+      if (e.id === "QUIT") {
+        process.exit(1);
+        return;
+      }
+
       console.warn(e);
       process.exit(1);
     });
