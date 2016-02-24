@@ -18,8 +18,7 @@ module.exports = function (path) {
       return;
     }
     let packagePath = path.indexOf("/") === 0 ? path.replace("/","") : path;
-    packagePath = removeAll( packagePath, [ "`", '"', "'" ] );
-    let fullPath = process.cwd() + "/" + packagePath;
+    let fullPath = process.cwd() + "/" + removeAll( packagePath, [ "`", '"', "'" ] )
     fs.readFile(fullPath, (err, data) => {
       if (err){ done(err); return; }
       if (isJsonString(data)) {

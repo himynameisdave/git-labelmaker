@@ -124,10 +124,10 @@ const handleMainPrompts = (repo, token, ans) => {
         message: "What is the path & name of the package you want to use? (eg: `packages/my-label-pkg.json`)",
         validate: validateAddPackages
       }])
-        .then((ans)=>{
-          return addFromPackage( repo, token, ans.path );
-        })
-        .catch(console.warn);
+      .then((ans)=>{
+        return addFromPackage( repo, token, ans.path );
+      })
+      .catch(console.warn);
       break;
 
     case "remove labels":

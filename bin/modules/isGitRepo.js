@@ -5,10 +5,7 @@
  */
 "use strict";
 const fs = require("fs");
-const err = {
-  id:  "GIT_REPO",
-  err: "Please run git-labelmaker inside a git repository!"
-};
+const err = require("../utils/errorGenerator")("GIT_REPO")("Please run git-labelmaker inside a git repository!")
 
 module.exports = () => {
   return new Promise((res, rej) => {
