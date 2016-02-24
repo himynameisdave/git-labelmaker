@@ -29,7 +29,6 @@ const doCustomLabelPrompts = require("./modules/doCustomLabelPrompts")(prompts.a
       prompt               = require("./modules/prompt"),
       validateAddPackages  = require("./modules/validateAddPackages");
 
-
 //    Kicks things off, named so that it can be called at any time
 //    The params will sometimes come thru if we've just set the token, so if we got them we alter the call a lil...
 const gitLabelmaker = (token) => {
@@ -49,6 +48,12 @@ const gitLabelmaker = (token) => {
       if (e.id === "QUIT") {
         banner.seeYa();
         process.exit(0);
+        return;
+      }
+
+      if (e.id === "PASSWORD") {
+        banner.wrongPassword();
+        gitLabelmaker();
         return;
       }
 
