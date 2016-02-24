@@ -45,7 +45,14 @@ module.exports = (rememberedToken) => {
                     res(token);
                   })
                   .catch((e)=>{
-                    rej(err(e.message));
+                     if (e.message === 'Failed opening archive: Error: Encrypted content has been tampered with') {
+                        rej({
+                          id: "PASSWORD"
+                        });
+
+                        return;
+                     }
+                     rej(err(e.message));
                   })
                 })
                 .catch((e)=>{
