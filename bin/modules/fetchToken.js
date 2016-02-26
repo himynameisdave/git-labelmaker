@@ -12,7 +12,7 @@ const pswrdPrompt = require("../prompts/password");
 const err         = require("../utils/errorGenerator")("TOKEN");
 const bcupPath    = Path.resolve(__dirname, "../..", ".git-labelmaker.bcup");
 const tokenActions =  {
-  unlock: "Use Existing Token",
+  unlock: "Use Saved Token",
   create: "Create New Token"
 }
 
@@ -24,7 +24,7 @@ module.exports = (rememberedToken) => {
       prompt([{
         type:     "list",
         name:     "token_action",
-        message:  "You have a token stored in .git-labelmaker.bcup.\nWould you like to unlock this, or create a new token?",
+        message:  "You have a saved token.\nWould you like to unlock & use this token, or create a new one?",
         choices:  [ tokenActions.unlock, tokenActions.create, "Quit" ]
       }])
       .then((answer) => {
