@@ -17,5 +17,6 @@ module.exports = {
   removeLabels:     printBanner("         Removing Labels         "),
   resetToken:       printBanner("         Resetting Token         "),
   seeYa:            printBanner("            See Ya!              "),
-  wrongPassword:    printBanner("         Wrong Password!         ")
+  wrongPassword:    printBanner("         Wrong Password!         "),
+  removeAllLabels:  printBanner("       Removing All Labels       ")
 };
