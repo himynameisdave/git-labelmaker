@@ -6,10 +6,12 @@
  */
 "use strict";
 
-module.exports = (str, finds) => {
+const removeAllFromStr = (str, finds) => {
   let cleanStr = str;
   finds.map((find)=>{
-    cleanStr.split(find).join("");
+    cleanStr = cleanStr.split(find).join("");
   });
   return cleanStr;
 };
+
+module.exports = removeAllFromStr;
