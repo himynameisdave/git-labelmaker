@@ -41,25 +41,23 @@ const gitLabelmaker = (token) => {
       iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, _repo, _token));
     })
     .catch((e)=>{
-      if (e.id === "TOKEN") {
-        setToken(gitLabelmaker);
-        return;
-      }
+      switch (e.id) {
+        case "TOKEN":
+          return setToken(gitLabelmaker);
+          break;
+        case "QUIT":
+          banner.seeYa();
+          return process.exit(0);
+          break;
+        case "PASSWORD":
+          banner.wrongPassword();
+          return gitLabelmaker();
+          break;
 
-      if (e.id === "QUIT") {
-        banner.seeYa();
-        process.exit(0);
-        return;
+        default:
+          console.warn(e);
+          process.exit(1);
       }
-
-      if (e.id === "PASSWORD") {
-        banner.wrongPassword();
-        gitLabelmaker();
-        return;
-      }
-
-      console.warn(e);
-      process.exit(1);
     });
   };
 
@@ -152,23 +150,52 @@ const handleMainPrompts = (repo, token, ans) => {
       .catch(console.warn);
       break;
 
+    case "create a package from labels":
+      banner.createPkgFromLabels();
+      let labelPkg = [];
+      requestLabels(repo, token)
+        .then((labels)=>{
+          if ( labels.length <= 0 ) return new Error("This repo has no labels to generate a package with!");
+          //  tell the user what labels we are going to remove
+          console.log("Creating a labels package from these labels:");
+          labelPkg = labels.map((label)=>{
+            console.log(" - "+label.name);
+            return { name: label.name, color: "#"+label.color };
+          });
+          return prompt([{
+            name:    "name",
+            type:    "input",
+            message: "What would you like to name this .json file?",
+            default: "labels.json"
+          }]);
+        })
+        .then((ans)=>{
+          if (ans.name.indexOf(".json") < 0){
+            ans.name = ans.name + ".json";
+          }
+          fs.writeFile( ans.name, JSON.stringify(labelPkg, null, 2), (e) => {
+            if (e) throw e;
+            console.log("Saved labels as "+ans.name);
+            gitLabelmaker(token);
+          })
+        })
+        .catch(console.warn);
+      break;
+
     case "remove labels":
       banner.removeLabels();
       //  If there are no labels to be removed then we can skip this part
       requestLabels(repo, token)
         .then((labels)=>{
-          if ( labels.length > 0 ){
-            return prompt([{
-              name:     "removals",
-              type:     "checkbox",
-              message:  "Which labels would you like to remove?",
-              choices:  labels.map((label) => label.name),
-              validate: validateRemovals,
-              filter:   filterRemovalLabels.bind(null, labels)
-            }]);
-          } else {
-            return new Error("This repo has no labels to remove!");
-          }
+          if ( labels.length <= 0 ) return new Error("This repo has no labels to remove!");
+          return prompt([{
+            name:     "removals",
+            type:     "checkbox",
+            message:  "Which labels would you like to remove?",
+            choices:  labels.map((label) => label.name),
+            validate: validateRemovals,
+            filter:   filterRemovalLabels.bind(null, labels)
+          }]);
         })
         .then((answers)=>{
           if (answers.removals){

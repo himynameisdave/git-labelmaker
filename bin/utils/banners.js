@@ -11,12 +11,13 @@ const printBanner =  ( banner ) => {
 };
 
 module.exports = {
-  welcome:          printBanner("    Welcome to git-labelmaker    "),
-  addCustom:        printBanner("       Adding Custom Labels      "),
-  addFromPackage:   printBanner("    Adding Labels From Package   "),
-  removeLabels:     printBanner("         Removing Labels         "),
-  resetToken:       printBanner("         Resetting Token         "),
-  seeYa:            printBanner("            See Ya!              "),
-  wrongPassword:    printBanner("         Wrong Password!         "),
-  removeAllLabels:  printBanner("       Removing All Labels       ")
+  welcome:             printBanner("    Welcome to git-labelmaker    "),
+  addCustom:           printBanner("       Adding Custom Labels      "),
+  addFromPackage:      printBanner("    Adding Labels From Package   "),
+  createPkgFromLabels: printBanner("   Creating Package From Labels  "),
+  removeLabels:        printBanner("         Removing Labels         "),
+  resetToken:          printBanner("         Resetting Token         "),
+  seeYa:               printBanner("            See Ya!              "),
+  wrongPassword:       printBanner("         Wrong Password!         "),
+  removeAllLabels:     printBanner("       Removing All Labels       ")
 };
