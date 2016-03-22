@@ -10,7 +10,7 @@ const alertDeletes         = require("./utils/alertDeletes"),
       banner               = require("./utils/banners"),
       configGitLabel       = require("./utils/configGitLabel"),
       filterRemovalLabels  = require("./utils/filterRemovalLabels"),
-      removeAllFromStr     = require("./utils/removeAll"),
+      removeAllFromStr     = require("./utils/removeAllFromStr"),
       validateRemovals     = require("./utils/validateRemovals");
 //    PROMPTS ARE THE PROMPTS ARRAYS FOR VARIOUS QUESTIONS
 const prompts              = {
@@ -19,7 +19,8 @@ const prompts              = {
         mainMenu:            require("./prompts/mainMenu")
       };
 //    MODULES ARE UTILS WITH DEPENDENCIES
-const doCustomLabelPrompts = require("./modules/doCustomLabelPrompts")(prompts.addCustom),
+const convertRGBToHex      = require("./modules/convertRGBToHex"),
+      doCustomLabelPrompts = require("./modules/doCustomLabelPrompts")(prompts.addCustom),
       readRepo             = require("./modules/readRepo"),
       setToken             = require("./modules/setToken"),
       fetchToken           = require("./modules/fetchToken"),
@@ -72,6 +73,22 @@ const resetToken = () => {
 const addCustom = (repo, token) => {
   banner.addCustom();
   return doCustomLabelPrompts( [], (newLabels) => {
+    let hexedLabels = newLabels.map((newLabel) => {
+      if (newLabel.color.indexOf(",") > -1){
+        try {
+          newLabel.color = convertRGBToHex(newLabel.color);
+        }
+        catch(e){
+          //  graceful quit if one of the values isn't actually rgb;
+          console.log(e);
+          gitLabelmaker(token);
+        }
+      }
+      return newLabel;
+    }).map((newLabel)=>{
+      newLabel.color = "#"+newLabel.color;
+      return newLabel;
+    });
     gitLabel.add( configGitLabel(repo, token), newLabels )
       .then(console.log)
       .catch(console.warn);
