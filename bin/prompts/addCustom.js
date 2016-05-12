@@ -14,12 +14,7 @@ module.exports = [
   },{
     type: "input",
     name: "labelColor",
-    message: "What color would you like this label to be?",
-    validate: (val) => {
-      if ( val.indexOf("#") <= -1 ) return "Please include a hash in front of the color!"
-      if ( val.length > 7 || val.length < 4 ) return "Please return a hexidecimal color!"
-      return true;
-    }
+    message: "What color would you like this label to be?"
   },{
     type: "confirm",
     name: "addAnother",

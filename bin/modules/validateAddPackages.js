@@ -5,7 +5,7 @@
  */
 "use strict";
 const fs = require("fs");
-const removeAll = require("../utils/removeAll");
+const removeAllFromStr = require("../utils/removeAllFromStr");
 const isJsonString = require("../utils/isJsonString");
 
 //  Not using arrows bc it will mess up "this" context
@@ -18,7 +18,7 @@ module.exports = function (path) {
       return;
     }
     let packagePath = path.indexOf("/") === 0 ? path.replace("/","") : path;
-    let fullPath = process.cwd() + "/" + removeAll( packagePath, [ "`", '"', "'" ] )
+    let fullPath = process.cwd() + "/" + removeAllFromStr( packagePath, [ "`", '"', "'" ] )
     fs.readFile(fullPath, (err, data) => {
       if (err){ done(err); return; }
       if (isJsonString(data)) {
