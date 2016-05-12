@@ -36,6 +36,7 @@
     "github-url-from-git": "^1.4.0",
     "inquirer": "^0.11.1",
     "octonode": "^0.7.4",
-    "rgb-hex": "^1.0.0"
+    "rgb-hex": "^1.0.0",
+    "parse-git-config": "^0.4.0"
   }
 }
