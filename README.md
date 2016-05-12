@@ -40,6 +40,10 @@ If you have a labels package in your current directory that you would like to us
 
 It must be a valid, parsable JSON file (although the extension doesn't matter). Check out [these really good ones](https://github.com/jasonbellamy/git-label-packages/tree/master/packages) if you need a template.
 
+#### Create Package From Labels
+
+Create a git label package from the current labels on a repo, so that you can easily use it again.
+
 #### Remove Labels
 
 You can also remove labels. Just select the ones you want to ditch and :boom: they're gone.
