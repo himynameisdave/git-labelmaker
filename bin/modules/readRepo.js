@@ -7,12 +7,10 @@
 "use strict";
 const gitUrl = require("github-url-from-git");
 
-module.exports = ( rawConfig ) => {
-  //  Break the config file contents into an array of newlines
-  let urlLine = rawConfig.split("\n").filter( (item) => {
-    //  returns only the line with "url = " on it
-    return item.indexOf("url = ") > -1;
-  })[0].split("url = ")[1];// gets everything on the url line following "url = "
-  let repoParts = gitUrl(urlLine).split("/");// gives us an array of each part of
+module.exports = ( config ) => {
+  // Retrieve the url of the origin remote
+  // Some repo can have multiple origin
+  const url = config['remote "origin"']['url'];
+  const repoParts = gitUrl(url).split("/");// gives us an array of each part of
   return repoParts[repoParts.length-2] + "/" + repoParts[repoParts.length-1];
 };
