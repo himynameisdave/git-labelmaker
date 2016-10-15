@@ -2,8 +2,9 @@
   "name": "git-labelmaker",
   "version": "0.8.0",
   "description": "Manage your GitHub labels from the command line! ",
-  "main": "index.js",
+  "main": "bin/index.js",
   "scripts": {
+    "start": "./bin/index.js",
     "test": "echo No tests"
   },
   "repository": {
@@ -31,7 +32,7 @@
   },
   "homepage": "https://github.com/himynameisdave/git-labelmaker#readme",
   "dependencies": {
-    "buttercup": "0.17.0",
+    "buttercup": "~0.24.0",
     "git-label": "^4.1.1",
     "github-url-from-git": "^1.4.0",
     "inquirer": "^0.11.1",
