@@ -5,20 +5,22 @@
  */
 "use strict";
 const fs = require("fs");
+const path = require("path");
 const removeAllFromStr = require("../utils/removeAllFromStr");
 const isJsonString = require("../utils/isJsonString");
 
 //  Not using arrows bc it will mess up "this" context
-module.exports = function (path) {
+module.exports = function (jsonPath) {
   // Declare function as asynchronous, and save the done callback
   let done = this.async();
   try {
-    if (path.indexOf(".json") < 0) {
+    if (jsonPath.indexOf(".json") < 0) {
       done("Not a JSON file");
       return;
     }
-    let packagePath = path.indexOf("/") === 0 ? path.replace("/","") : path;
-    let fullPath = process.cwd() + "/" + removeAllFromStr( packagePath, [ "`", '"', "'" ] )
+    // Calculate the full path of the JSON file based upon the current working directory. Using
+    // path.resolve allows for absolute paths to be used also.
+    let fullPath = path.resolve(process.cwd(), jsonPath);
     fs.readFile(fullPath, (err, data) => {
       if (err){ done(err); return; }
       if (isJsonString(data)) {
