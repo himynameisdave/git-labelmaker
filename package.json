@@ -1,7 +1,7 @@
 {
   "name": "git-labelmaker",
-  "version": "0.8.0",
-  "description": "Manage your GitHub labels from the command line! ",
+  "version": "0.8.1",
+  "description": "Manage your GitHub labels from the command line!",
   "main": "bin/index.js",
   "scripts": {
     "start": "./bin/index.js",
