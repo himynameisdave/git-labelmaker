@@ -14,6 +14,7 @@ module.exports = {
   welcome:             printBanner("    Welcome to git-labelmaker    "),
   addCustom:           printBanner("       Adding Custom Labels      "),
   addFromPackage:      printBanner("    Adding Labels From Package   "),
+  addGlobalPackage:    printBanner("       Add Global Package        "),
   createPkgFromLabels: printBanner("   Creating Package From Labels  "),
   removeLabels:        printBanner("         Removing Labels         "),
   resetToken:          printBanner("         Resetting Token         "),
