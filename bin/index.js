@@ -4,6 +4,7 @@
 //    EXTERNAL DEPENDENCIES
 const fs                   = require("fs"),
       iq                   = require("inquirer"),
+      pathTool             = require("path"),
       gitLabel             = require("git-label");
 //    UTILS ARE STANDALONE METHODS WITH NO DEPENDENCIES
 const alertDeletes         = require("./utils/alertDeletes"),
@@ -103,6 +104,20 @@ const addFromPackage = (repo, token, path) => {
     .catch(console.warn);
 };
 
+const setGlobalPackage = (path, token) => {
+  fs.writeFile('.git-label-maker-config', pathTool.resolve(__dirname, '..', path), (err) => {
+    if (err) throw err;
+    console.log("\n");
+    console.log("Saved " + path + " as global. When you specify no file when adding from a package, the global will be used instead.");
+    console.log("\n");
+    gitLabelmaker(token);
+  });
+};
+
+const getGlobalPackage = () => {
+  return fs.readFileSync('.git-label-maker-config', 'utf-8');
+}
+
 //    removeLabels function
 const removeLabels = (repo, token, answers) => {
   //  Tell the user what they're about to lose
@@ -145,7 +160,28 @@ const handleMainPrompts = (repo, token, ans) => {
         validate: validateAddPackages
       }])
       .then((ans)=>{
-        return addFromPackage( repo, token, ans.path );
+        if (ans.path !== "") {
+          return addFromPackage( repo, token, ans.path );
+        } else {
+          try {
+            addFromPackage( repo, token, getGlobalPackage() );
+          } catch (e) {
+            console.log("Either an incorrect global was used or no global package has been set yet.");
+          }
+        }
+      })
+      .catch(console.warn);
+      break;
+
+    case "add global package":
+      prompt([{
+        name:    "path",
+        type:    "input",
+        message: "What is the pathname you want to use for your package? (Must be valid json)",
+        validate: validateAddPackages
+      }])
+      .then((ans)=>{
+        return setGlobalPackage( ans.path, token );
       })
       .catch(console.warn);
       break;

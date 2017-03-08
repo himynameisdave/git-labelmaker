@@ -13,6 +13,8 @@ const isJsonString = require("../utils/isJsonString");
 module.exports = function (jsonPath) {
   // Declare function as asynchronous, and save the done callback
   let done = this.async();
+  // this is clunky, but this way we can just use a default
+  if (jsonPath === "") done(true);
   try {
     if (jsonPath.indexOf(".json") < 0) {
       done("Not a JSON file");
