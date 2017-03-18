@@ -35,10 +35,17 @@ const convertRGBToHex      = require("./modules/convertRGBToHex"),
 const gitLabelmaker = (token) => {
   Promise.all([ isGitRepo(), readGitConfig(), fetchToken(token) ])
     .then(( values )=>{
-      let _repo = readRepo(values[1]);
-      let _token = values[2];
-      banner.welcome();
-      iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, _repo, _token));
+      //  TODO: this is a bit callback-hellish
+      readRepo(values[1])
+        .then(_repo => {
+          let _token = values[2];
+          banner.welcome();
+          iq.prompt( prompts.mainMenu, handleMainPrompts.bind(null, _repo, _token));
+        })
+        .catch(e => {
+          console.error(e);
+          process.exit(1);
+        })
     })
     .catch((e)=>{
       switch (e.id) {
