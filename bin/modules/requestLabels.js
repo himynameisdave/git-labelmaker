@@ -8,11 +8,11 @@
 "use strict";
 const octonode = require("octonode");
 
-module.exports = ( repo, token ) => {
+module.exports = (repo, token) => {
   return new Promise((res, rej)=>{
-    octonode.client(token).get('/repos/'+repo+'/labels', (e, status, body) => {
-      if (e) rej(e);
-      res(body);
+    octonode.client(token).get('/repos/'+repo+'/labels', { per_page: 100 }, (e, status, body, headers) => {
+      if (e) return rej(e);
+      return res(body);
     });
   });
 };
