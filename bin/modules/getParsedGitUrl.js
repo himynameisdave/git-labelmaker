@@ -6,7 +6,7 @@ module.exports = (config, remote, error) => {
   const rootGithubUrl = 'https://github.com/';
   //  Note: this is github specific
   if (!parsedGitUrl && parsedGitUrl.indexOf(rootGithubUrl) === -1) return error();
-  parsedGitUrl
+  return parsedGitUrl
         .split(rootGithubUrl) // -> ['', 'user/repo']
         .reduce((a,b) => b.length ? b : a)
 };
