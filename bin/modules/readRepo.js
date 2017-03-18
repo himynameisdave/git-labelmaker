@@ -4,7 +4,7 @@
  *    @param  {String}  rawConfig
  *    @return {String}  repo
  */
-"use strict";
+'use strict';
 const gitUrl = require('github-url-from-git');
 const err = require('../utils/errorGenerator')('READ_REPO')('Could not read git repo from your .git/ directory!')
 
@@ -18,7 +18,8 @@ module.exports = ( config ) => {
   // Some repo can have multiple origin
   const url = config['remote "origin"']['url'];
   const parsedGitUrl = gitUrl(url);
-  if (!parsedGitUrl && parsedGitUrl.indexOf('/') === -1) return throwReadRepoError();
-  const repoParts = gitUrl(url).split(`/`);
-  return `${repoParts[repoParts.length - 2]}/${repoParts[repoParts - 1]}`;
+  //  Note: this is github specific
+  if (!parsedGitUrl && parsedGitUrl.indexOf('https://github.com/') === -1) return throwReadRepoError();
+  return parsedGitUrl.split('https://github.com/') // -> ['', 'user/repo']
+                     .reduce((a,b) => b.length ? b : a); // gets the second item in array
 };
