@@ -4,8 +4,8 @@
  *    @param  {Function} callback function
  */
 
-const prompt = require('./prompt');
 const Buttercup = require('buttercup');
+const prompt = require('./prompt.js');
 
 const bcupPath = `${__dirname}/../../.git-labelmaker.bcup`;
 

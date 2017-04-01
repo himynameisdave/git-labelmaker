@@ -6,7 +6,7 @@
 
 
 const parse = require('parse-git-config');
-const err = require('../utils/errorGenerator')('GIT_CONFIG')('Unable to read git config file!');
+const err = require('../utils/error-generator.js')('GIT_CONFIG')('Unable to read git config file!');
 
 module.exports = () => new Promise((res, rej) => {
     parse((e, config) => {

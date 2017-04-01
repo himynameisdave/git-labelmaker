@@ -6,7 +6,7 @@
 
 
 const rgbHex = require('rgb-hex');
-const removeAllFromStr = require('../utils/removeAllFromStr');
+const removeAllFromStr = require('../utils/remove-all-from-str.js');
 
 module.exports = (color) => {
   // strip other shit off, return an array

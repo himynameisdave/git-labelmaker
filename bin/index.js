@@ -7,29 +7,29 @@ const fs                   = require('fs');
 const iq                   = require('inquirer');
 const gitLabel             = require('git-label');
 //    UTILS ARE STANDALONE METHODS WITH NO DEPENDENCIES
-const alertDeletes         = require('./utils/alertDeletes');
-const banner               = require('./utils/banners');
-const configGitLabel       = require('./utils/configGitLabel');
-const filterRemovalLabels  = require('./utils/filterRemovalLabels');
-const removeAllFromStr     = require('./utils/removeAllFromStr');
-const validateRemovals     = require('./utils/validateRemovals');
+const alertDeletes         = require('./utils/alert-deletes.js');
+const banner               = require('./utils/banners.js');
+const configGitLabel       = require('./utils/config-git-label.js');
+const filterRemovalLabels  = require('./utils/filter-removal-labels.js');
+const removeAllFromStr     = require('./utils/remove-all-from-str.js');
+const validateRemovals     = require('./utils/validate-removals.js');
 //    PROMPTS ARE THE PROMPTS ARRAYS FOR VARIOUS QUESTIONS
 const prompts              = {
-    addCustom:           require('./prompts/addCustom'),
-    deleteConfirm:       require('./prompts/deleteConfirm'),
-    mainMenu:            require('./prompts/mainMenu'),
+    addCustom:           require('./prompts/add-custom.js'),
+    deleteConfirm:       require('./prompts/delete-confirm.js'),
+    mainMenu:            require('./prompts/main-menu.js'),
 };
 //    MODULES ARE UTILS WITH DEPENDENCIES
-const convertRGBToHex      = require('./modules/convertRGBToHex');
-const doCustomLabelPrompts = require('./modules/doCustomLabelPrompts')(prompts.addCustom);
-const readRepo             = require('./modules/readRepo');
-const setToken             = require('./modules/setToken');
-const fetchToken           = require('./modules/fetchToken');
-const isGitRepo            = require('./modules/isGitRepo');
-const readGitConfig        = require('./modules/readGitConfig');
-const requestLabels        = require('./modules/requestLabels');
-const prompt               = require('./modules/prompt');
-const validateAddPackages  = require('./modules/validateAddPackages');
+const convertRGBToHex      = require('./modules/convert-rgb-to-hex.js');
+const doCustomLabelPrompts = require('./modules/do-custom-label-prompts.js')(prompts.addCustom);
+const readRepo             = require('./modules/read-repo.js');
+const setToken             = require('./modules/set-token.js');
+const fetchToken           = require('./modules/fetch-token.js');
+const isGitRepo            = require('./modules/is-git-repo.js');
+const readGitConfig        = require('./modules/read-git-config.js');
+const requestLabels        = require('./modules/request-labels.js');
+const prompt               = require('./modules/prompt.js');
+const validateAddPackages  = require('./modules/validate-add-packages.js');
 
 //    Kicks things off, named so that it can be called at any time
 //    The params will sometimes come thru if we've just set the token, so if we got them we alter the call a lil...

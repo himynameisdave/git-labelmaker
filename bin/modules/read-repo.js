@@ -6,10 +6,10 @@
  */
 
 
-const getParsedGitUrl = require('./getParsedGitUrl.js');
+const getParsedGitUrl = require('./get-parsed-git-url.js');
 const prompt = require('./prompt.js');
-const askWhichRemotePrompt = require('../prompts/askWhichRemote.js');
-const err = require('../utils/errorGenerator')('READ_REPO')('Could not read git repo from your .git/ directory!');
+const askWhichRemotePrompt = require('../prompts/ask-which-remote.js');
+const err = require('../utils/error-generator.js')('READ_REPO')('Could not read git repo from your .git/ directory!');
 
 
 //  TODO: this could be broken off into an error-throwing module

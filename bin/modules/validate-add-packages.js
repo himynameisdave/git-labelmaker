@@ -7,7 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const isJsonString = require('../utils/isJsonString');
+const isJsonString = require('../utils/is-json-string.js');
 
 //  Not using arrows bc it will mess up "this" context
 module.exports = function (jsonPath) { // eslint-disable-line func-names

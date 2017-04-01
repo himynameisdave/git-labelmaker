@@ -6,8 +6,8 @@
 const fs          = require('fs');
 const Path        = require('path');
 const Buttercup   = require('buttercup');
-const prompt      = require('./prompt');
-const err         = require('../utils/errorGenerator')('TOKEN');
+const prompt      = require('./prompt.js');
+const err         = require('../utils/error-generator.js')('TOKEN');
 
 const tokenActions =  {
     unlock: 'Use Saved Token',
