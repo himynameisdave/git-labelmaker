@@ -4,12 +4,10 @@
  *    @param  {String} token - string of the token
  *    @return {Object} a config object for git-label
  */
-"use strict";
 
-module.exports = (repo, token) => {
-  return {
+
+module.exports = (repo, token) => ({
     api:    'https://api.github.com',
-    repo:   repo,
-    token:  token
-  }
-};
+    repo,
+    token,
+});

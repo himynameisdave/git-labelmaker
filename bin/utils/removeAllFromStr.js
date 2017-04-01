@@ -4,14 +4,14 @@
  *    @param  {Array}  finds - array of substrings to be removed
  *    @return {String} a "cleaned" string
  */
-"use strict";
+
 
 const removeAllFromStr = (str, finds) => {
-  let cleanStr = str;
-  finds.map((find)=>{
-    cleanStr = cleanStr.split(find).join("");
-  });
-  return cleanStr;
+    let cleanStr = str;
+    finds.forEach(find => {
+        cleanStr = cleanStr.split(find).join('');
+    });
+    return cleanStr;
 };
 
 module.exports = removeAllFromStr;
