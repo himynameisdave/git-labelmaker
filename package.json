@@ -39,6 +39,9 @@
     "inquirer": "^0.11.1",
     "octonode": "^0.7.4",
     "parse-git-config": "^1.1.1",
-    "rgb-hex": "^1.0.0"
+    "rgb-hex": "^2.1.0"
+  },
+  "devDependencies": {
+    "jest": "^19.0.2"
   }
 }
