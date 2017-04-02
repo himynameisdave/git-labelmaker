@@ -23,6 +23,7 @@
             "functions": "ignore"
         }],
         "key-spacing": [0],
+        "radix": [0],
         "import/extensions": [0]
     }
 }

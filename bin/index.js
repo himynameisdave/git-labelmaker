@@ -64,12 +64,15 @@ const gitLabelmaker = (token) => {
           }
       });
 };
+exports.gitLabelmaker = gitLabelmaker;
+
 
 //    resetToken function
 const resetToken = () => {
     banner.resetToken();
     return setToken(gitLabelmaker);
 };
+exports.resetToken = resetToken;
 
 //    addCustom labels function
 const addCustom = (repo, token) => {
@@ -96,6 +99,7 @@ const addCustom = (repo, token) => {
           .catch(console.warn);
     });
 };
+exports.addCustom = addCustom;
 
 //    addFromPackage function
 const addFromPackage = (repo, token, path) => {
@@ -106,6 +110,7 @@ const addFromPackage = (repo, token, path) => {
       .then(console.log)
       .catch(console.warn);
 };
+exports.addFromPackage = addFromPackage;
 
 //    removeLabels function
 const removeLabels = (repo, token, answers) => {
@@ -123,6 +128,7 @@ const removeLabels = (repo, token, answers) => {
       .then(console.log)
       .catch(console.warn);
 };
+exports.removeLabels = removeLabels;
 
 //    Callback for the main prompts, handles program flow
 const handleMainPrompts = (repo, token, ans) => {
@@ -221,6 +227,7 @@ const handleMainPrompts = (repo, token, ans) => {
             return gitLabelmaker();
     }
 };
+exports.handleMainPrompts = handleMainPrompts;
 
 //  Begin our application
 gitLabelmaker();

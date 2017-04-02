@@ -5,7 +5,7 @@ module.exports = (config, remote, error) => {
     const parsedGitUrl = gitUrl(url);
     const rootGithubUrl = 'https://github.com/';
     //  Note: this is github specific
-    if (!parsedGitUrl && parsedGitUrl.indexOf(rootGithubUrl) === -1) return error();
+    if (!parsedGitUrl || parsedGitUrl.indexOf(rootGithubUrl) === -1) return error();
     return parsedGitUrl
         .split(rootGithubUrl) // -> ['', 'user/repo']
         .reduce((a, b) => b.length ? b : a); // eslint-disable-line no-confusing-arrow

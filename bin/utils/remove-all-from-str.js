@@ -9,7 +9,7 @@ const S = require('string');
 const removeAllFromStr = (str, removals) => {
     let cleanStr = str;
     removals.map(remove => { // eslint-disable-line array-callback-return
-        cleanStr = S(cleanStr).strip(remove);
+        cleanStr = S(cleanStr).strip(remove).s;
     });
     return cleanStr;
 };
