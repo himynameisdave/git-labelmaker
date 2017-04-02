@@ -4,12 +4,12 @@
  *    @param  {Array}  finds - array of substrings to be removed
  *    @return {String} a "cleaned" string
  */
+const S = require('string');
 
-
-const removeAllFromStr = (str, finds) => {
+const removeAllFromStr = (str, removals) => {
     let cleanStr = str;
-    finds.forEach(find => {
-        cleanStr = cleanStr.split(find).join('');
+    removals.map(remove => { // eslint-disable-line array-callback-return
+        cleanStr = S(cleanStr).strip(remove);
     });
     return cleanStr;
 };

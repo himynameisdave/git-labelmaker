@@ -4,6 +4,6 @@
  */
 
 
-module.exports = (removals) => removals.map((label) => ` - ${label.name}`).forEach((prettyLabel) => {
+module.exports = (removals) => removals.map(label => ` - ${label.name}`).forEach(prettyLabel => {
     console.log(prettyLabel);
 });

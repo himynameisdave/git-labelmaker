@@ -4,4 +4,4 @@
  */
 
 
-module.exports = (id) => (message) => ({ id, err: message, });
+module.exports = (id) => (err) => ({ id, err, });

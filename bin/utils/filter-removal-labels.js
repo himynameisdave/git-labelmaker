@@ -6,5 +6,7 @@
  */
 
 
-module.exports = (labels, removals) => labels.map((label) => ({ name: label.name, color: `#${label.color}`, }))
-  .filter((label) => removals.indexOf(label.name) > -1);
+module.exports = (labels, removals) => labels.reduce((a, label) => {
+    if (removals.includes(label.name)) a.push(Object.assign({}, label, { color: `#${label.color}`, }));
+    return a;
+}, []);
