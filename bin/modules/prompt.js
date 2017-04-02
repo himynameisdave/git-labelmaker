@@ -4,14 +4,13 @@
  *    @param  {Array}  prompts - array of prompts for Inquirer
  *    @return {Promise} - Promise that resolves answers to the prompts
  */
-"use strict";
-const iq = require("inquirer");
 
-module.exports = (prompts) => {
-  return new Promise((res, rej)=>{
+
+const iq = require('inquirer');
+
+module.exports = (prompts) => new Promise((res, rej) => {
     iq.prompt(prompts, (answers) => {
-      if ( !answers ) rej(answers);
-      res(answers);
+        if (!answers) rej(answers);
+        res(answers);
     });
-  });
-};
+});

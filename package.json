@@ -5,7 +5,9 @@
   "main": "bin/index.js",
   "scripts": {
     "start": "./bin/index.js",
-    "test": "echo No tests"
+    "test": "jest --verbose --coverage --no-cache",
+    "lint": "eslint ./bin/ --no-cache",
+    "precommit": "npm run lint && npm run test"
   },
   "repository": {
     "type": "git",
@@ -39,6 +41,14 @@
     "inquirer": "^0.11.1",
     "octonode": "^0.7.4",
     "parse-git-config": "^1.1.1",
-    "rgb-hex": "^1.0.0"
+    "rgb-hex": "^2.1.0",
+    "string": "^3.3.3"
+  },
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "^11.1.2",
+    "eslint-plugin-import": "^2.2.0",
+    "husky": "^0.13.3",
+    "jest": "^19.0.2"
   }
 }
