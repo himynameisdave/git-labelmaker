@@ -17,7 +17,7 @@
     "git-labelmaker": "bin/index.js"
   },
   "engines": {
-    "node": ">= 6.0.0",
+    "node": ">= 4.0.0",
     "npm": ">= 3.9.0"
   },
   "preferGlobal": true,
