@@ -1,8 +1,8 @@
-// const index = require('../index.js');
-//
-// test('gitLabelmaker', () => {
-//     expect('untested').toBeTruthy();
-// });
+const index = require('../index.js'); // eslint-disable-line
+
+test('gitLabelmaker', () => {
+    expect('untested').toBe('untested');
+});
 //
 // test('resetToken', () => {
 //     expect('untested').toBeTruthy();

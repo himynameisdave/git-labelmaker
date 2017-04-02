@@ -5,7 +5,10 @@
   "main": "bin/index.js",
   "scripts": {
     "start": "./bin/index.js",
-    "test": "jest --verbose --coverage --no-cache"
+    "test": "jest --verbose --coverage --no-cache",
+    "lint": "eslint ./bin/ --no-cache",
+    "precommit": "npm run lint && npm run test",
+    "prepush": "npm run lint && npm run test"
   },
   "repository": {
     "type": "git",
@@ -46,6 +49,7 @@
     "eslint": "^3.19.0",
     "eslint-config-airbnb-base": "^11.1.2",
     "eslint-plugin-import": "^2.2.0",
+    "husky": "^0.13.3",
     "jest": "^19.0.2"
   }
 }
