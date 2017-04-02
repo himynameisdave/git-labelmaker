@@ -6,6 +6,7 @@
   "scripts": {
     "start": "./bin/index.js",
     "test": "jest --verbose --coverage --no-cache",
+    "test-coverage": "jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "lint": "eslint ./bin/ --no-cache",
     "precommit": "npm run lint && npm run test"
   },
@@ -45,6 +46,7 @@
     "string": "^3.3.3"
   },
   "devDependencies": {
+    "coveralls": "^2.13.0",
     "eslint": "^3.19.0",
     "eslint-config-airbnb-base": "^11.1.2",
     "eslint-plugin-import": "^2.2.0",
