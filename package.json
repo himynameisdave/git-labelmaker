@@ -8,7 +8,8 @@
     "test": "jest --verbose --coverage --no-cache",
     "test-coverage": "jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "lint": "eslint ./bin/ --no-cache",
-    "precommit": "npm run lint && npm run test"
+    "precommit": "npm run lint && npm run test",
+    "prepublish": "npm run lint && npm run test"
   },
   "repository": {
     "type": "git",
