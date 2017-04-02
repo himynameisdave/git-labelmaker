@@ -62,5 +62,5 @@ Feel free to contribute to the project by opening a [Pull Request](https://githu
 
 ---
 
-*Created by [Dave Lunny](https://twitter.com/dave_lunny) in the wonderful year of 2016.*
+*Created by [Dave Lunny](https://twitter.com/dave_lunny) in the glorious year of 2017.*
 *Licensed under MIT :hand:*

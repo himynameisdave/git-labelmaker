@@ -1,23 +1,28 @@
 /**
  *    Responsible for the banners, and for printing them
  */
-"use strict";
 
-const bar      = "=======================================\n";
-const block    = "]|[";
-const emptyRow = block+"                                 "+block+"\n";
-const printBanner =  ( banner ) => {
-  return () => console.log( bar + emptyRow + block + banner + block + "\n" + emptyRow + bar );
-};
+const pad33 = require('./pad-33.js');
+const banners = require('../constants.js').banners;
 
-module.exports = {
-  welcome:             printBanner("    Welcome to git-labelmaker    "),
-  addCustom:           printBanner("       Adding Custom Labels      "),
-  addFromPackage:      printBanner("    Adding Labels From Package   "),
-  createPkgFromLabels: printBanner("   Creating Package From Labels  "),
-  removeLabels:        printBanner("         Removing Labels         "),
-  resetToken:          printBanner("         Resetting Token         "),
-  seeYa:               printBanner("            See Ya!              "),
-  wrongPassword:       printBanner("         Wrong Password!         "),
-  removeAllLabels:     printBanner("       Removing All Labels       ")
-};
+const bar      = '=======================================\n';
+const block    = ']|[';
+const emptyRow = `${block}                                 ${block}\n`;
+const printBanner =  (banner) => () => console.log(`${bar + emptyRow + block + banner + block}\n${emptyRow}${bar}`);
+
+
+const props = [
+    'welcome',
+    'addCustom',
+    'addFromPackage',
+    'createPkgFromLabels',
+    'removeLabels',
+    'resetToken',
+    'seeYa',
+    'wrongPassword',
+    'removeAllLabels',
+];
+
+module.exports = banners.map(pad33)
+                        .map(printBanner)
+                        .reduce((a, b, i) => Object.assign(a, { [props[i]]: b, }), {});

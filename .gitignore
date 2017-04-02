@@ -1,2 +1,4 @@
 /node_modules/
 *.bcup
+*.DS_Store
+/coverage/
