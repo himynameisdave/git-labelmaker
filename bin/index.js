@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-'use strict'; // eslint-disable-line
+'use strict';
 
 //    EXTERNAL DEPENDENCIES
 const fs                   = require('fs');

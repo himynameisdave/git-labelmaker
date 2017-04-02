@@ -1,3 +1,5 @@
+'use strict';
+
 const alertDeletes = require('../alert-deletes.js');
 
 const _console = console;

@@ -4,6 +4,7 @@
  *    @return {String} hex - the hex of the above color
  */
 
+'use strict';
 
 const rgbHex = require('rgb-hex');
 const removeAllFromStr = require('../utils/remove-all-from-str.js');
@@ -12,7 +13,7 @@ module.exports = (color) => {
     // strip other strings off
     const stripNonValRgbText = str => removeAllFromStr(str, ['rgb', '(', ')', ' ']);
     //  rgbHex only accepts numbers, this checks for NaN
-    const includesNonNumbers = arr => arr.includes(val => isNaN(val));
+    const includesNonNumbers = arr => !!(arr.filter(val => isNaN(val)).length);
     //  actually generates our RGB values
     const values = color.split(',')
                       .map(val => val.toLowerCase())

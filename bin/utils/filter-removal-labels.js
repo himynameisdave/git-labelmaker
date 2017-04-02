@@ -5,8 +5,9 @@
  *    @return {Array} removals - array of proper label objects to be removed
  */
 
+'use strict';
 
 module.exports = (labels, removals) => labels.reduce((a, label) => {
-    if (removals.includes(label.name)) a.push(Object.assign({}, label, { color: `#${label.color}`, }));
+    if (removals.indexOf(label.name) > -1) a.push(Object.assign({}, label, { color: `#${label.color}`, }));
     return a;
 }, []);
