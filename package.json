@@ -7,8 +7,7 @@
     "start": "./bin/index.js",
     "test": "jest --verbose --coverage --no-cache",
     "lint": "eslint ./bin/ --no-cache",
-    "precommit": "npm run lint && npm run test",
-    "prepush": "npm run lint && npm run test"
+    "precommit": "npm run lint && npm run test"
   },
   "repository": {
     "type": "git",
