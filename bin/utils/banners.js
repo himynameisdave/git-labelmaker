@@ -24,5 +24,5 @@ const props = [
 ];
 
 module.exports = banners.map(pad33)
-                        .map(printBanner)
-                        .reduce((a, b, i) => Object.assign(a, { [props[i]]: b, }), {});
+    .map(printBanner)
+    .reduce((a, b, i) => Object.assign(a, { [props[i]]: b, }), {});

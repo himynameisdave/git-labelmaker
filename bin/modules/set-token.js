@@ -31,9 +31,9 @@ module.exports = (done) => {
         message: 'What is your master password, to keep your access token secure?',
         when: (answer) => (answer.token !== undefined && answer.token.length !== 0),
     }])
-  .then((answer) => writeToken(answer.master_password, answer.token))
-  .then((token) => {
-      done(token);
-  })
-  .catch(console.warn);
+        .then((answer) => writeToken(answer.master_password, answer.token))
+        .then((token) => {
+            done(token);
+        })
+        .catch(console.warn);
 };

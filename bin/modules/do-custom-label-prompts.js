@@ -10,15 +10,15 @@ const prompt = require('./prompt.js');
 module.exports = (prompts) => {
     const doCustomLabelPrompts = (newLabels, done) => {
         prompt(prompts)
-      .then((answers) => {
-          newLabels.push({ name: answers.labelName, color: answers.labelColor, });
-          if (answers.addAnother) {
-              doCustomLabelPrompts(newLabels, done);
-          } else {
-              done(newLabels);
-          }
-      })
-      .catch(console.warn);
+            .then((answers) => {
+                newLabels.push({ name: answers.labelName, color: answers.labelColor, });
+                if (answers.addAnother) {
+                    doCustomLabelPrompts(newLabels, done);
+                } else {
+                    done(newLabels);
+                }
+            })
+            .catch(console.warn);
     };
     return doCustomLabelPrompts;
 };
