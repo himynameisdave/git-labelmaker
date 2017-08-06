@@ -4,7 +4,6 @@
 
 const pad33 = require('./pad-33.js');
 const banners = require('../constants.js').banners;
-
 const bar = '=======================================\n';
 const block = ']|[';
 const emptyRow = `${block}                                 ${block}\n`;
@@ -15,6 +14,7 @@ const props = [
     'welcome',
     'addCustom',
     'addFromPackage',
+    'addGlobalPackage',
     'createPkgFromLabels',
     'removeLabels',
     'resetToken',

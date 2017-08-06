@@ -2,3 +2,4 @@
 *.bcup
 *.DS_Store
 /coverage/
+*.git-label-maker-config

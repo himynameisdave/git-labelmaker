@@ -5,6 +5,7 @@
 //    EXTERNAL DEPENDENCIES
 const fs = require('fs');
 const prompt = require('inquirer').prompt;
+const pathTool = require('path');
 const gitLabel = require('git-label');
 //    UTILS ARE STANDALONE METHODS WITH NO DEPENDENCIES
 const alertDeletes = require('./utils/alert-deletes.js');
@@ -111,6 +112,18 @@ const addFromPackage = (repo, token, path) => {
 };
 exports.addFromPackage = addFromPackage;
 
+const setGlobalPackage = (path, token) => {
+    fs.writeFile('.git-labelmaker-config', pathTool.resolve(__dirname, '..', path), (err) => {
+        if (err) throw err;
+        console.log(`Saved ${path} as a global. When you specify no file when adding from a package, the global will be used instead.`);
+        gitLabelmaker(token);
+    });
+};
+//  Not in use... yet :)
+// const getGlobalPackage = () => {
+//   return fs.readFileSync('.git-labelmaker-config', 'utf-8');
+// };
+
 //    removeLabels function
 const removeLabels = (repo, token, answers) => {
     //  Tell the user what they're about to lose
@@ -142,6 +155,16 @@ const handleMainPrompts = (repo, token, ans) => {
 
         case 'add custom labels':
             return addCustom(repo, token);
+
+        case 'add global package':
+            return prompt([{
+                name:    'path',
+                type:    'input',
+                message: 'What is the pathname you want to use for your package? (Must be valid json)',
+                validate: validateAddPackages,
+            }])
+                .then((globalAns) => setGlobalPackage(globalAns.path, token))
+                .catch(console.warn);
 
         case 'add labels from package':
             banner.addFromPackage();

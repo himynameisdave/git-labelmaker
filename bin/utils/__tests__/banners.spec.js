@@ -42,43 +42,50 @@ test('it prints the addFromPackage banner to the console', () => {
     expect(console.log.mock.calls[0][0]).toBe(expected);
 });
 
-test('it prints the createPkgFromLabels banner to the console', () => {
+test('it prints the addGlobalPackage banner to the console', () => {
     const expected = makeExpected(pad33(constants.banners[3]));
+    banners.addGlobalPackage();
+    expect(console.log.mock.calls.length).toBe(1);
+    expect(console.log.mock.calls[0][0]).toBe(expected);
+});
+
+test('it prints the createPkgFromLabels banner to the console', () => {
+    const expected = makeExpected(pad33(constants.banners[4]));
     banners.createPkgFromLabels();
     expect(console.log.mock.calls.length).toBe(1);
     expect(console.log.mock.calls[0][0]).toBe(expected);
 });
 
 test('it prints the removeLabels banner to the console', () => {
-    const expected = makeExpected(pad33(constants.banners[4]));
+    const expected = makeExpected(pad33(constants.banners[5]));
     banners.removeLabels();
     expect(console.log.mock.calls.length).toBe(1);
     expect(console.log.mock.calls[0][0]).toBe(expected);
 });
 
 test('it prints the resetToken banner to the console', () => {
-    const expected = makeExpected(pad33(constants.banners[5]));
+    const expected = makeExpected(pad33(constants.banners[6]));
     banners.resetToken();
     expect(console.log.mock.calls.length).toBe(1);
     expect(console.log.mock.calls[0][0]).toBe(expected);
 });
 
 test('it prints the seeYa banner to the console', () => {
-    const expected = makeExpected(pad33(constants.banners[6]));
+    const expected = makeExpected(pad33(constants.banners[7]));
     banners.seeYa();
     expect(console.log.mock.calls.length).toBe(1);
     expect(console.log.mock.calls[0][0]).toBe(expected);
 });
 
 test('it prints the wrongPassword banner to the console', () => {
-    const expected = makeExpected(pad33(constants.banners[7]));
+    const expected = makeExpected(pad33(constants.banners[8]));
     banners.wrongPassword();
     expect(console.log.mock.calls.length).toBe(1);
     expect(console.log.mock.calls[0][0]).toBe(expected);
 });
 
 test('it prints the removeAllLabels banner to the console', () => {
-    const expected = makeExpected(pad33(constants.banners[8]));
+    const expected = makeExpected(pad33(constants.banners[9]));
     banners.removeAllLabels();
     expect(console.log.mock.calls.length).toBe(1);
     expect(console.log.mock.calls[0][0]).toBe(expected);

@@ -17,6 +17,7 @@ const constants = {
         'Welcome to git-labelmaker',
         'Adding Custom Labels',
         'Adding Labels From Package',
+        'Add Global Package',
         'Creating Package From Labels',
         'Removing Labels',
         'Resetting Token',
