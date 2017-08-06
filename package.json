@@ -37,21 +37,21 @@
   },
   "homepage": "https://github.com/himynameisdave/git-labelmaker#readme",
   "dependencies": {
-    "buttercup": "~0.24.0",
+    "buttercup": "^0.45.0",
     "git-label": "^4.1.1",
     "github-url-from-git": "^1.5.0",
-    "inquirer": "^0.11.1",
-    "octonode": "^0.7.4",
+    "inquirer": "^3.2.1",
+    "octonode": "^0.8.0",
     "parse-git-config": "^1.1.1",
     "rgb-hex": "^2.1.0",
     "string": "^3.3.3"
   },
   "devDependencies": {
-    "coveralls": "^2.13.0",
-    "eslint": "^3.19.0",
-    "eslint-config-airbnb-base": "^11.1.2",
-    "eslint-plugin-import": "^2.2.0",
-    "husky": "^0.13.3",
-    "jest": "^19.0.2"
+    "coveralls": "^2.13.1",
+    "eslint": "^4.4.0",
+    "eslint-config-airbnb-base": "^11.3.1",
+    "eslint-plugin-import": "^2.7.0",
+    "husky": "^0.14.3",
+    "jest": "^20.0.4"
   }
 }
