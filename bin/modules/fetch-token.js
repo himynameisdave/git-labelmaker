@@ -3,14 +3,14 @@
  *    @dep    {node}    fs
  *    @return {Promise}
  */
-const fs          = require('fs');
-const Path        = require('path');
-const Buttercup   = require('buttercup');
-const prompt      = require('./prompt.js');
-const constants      = require('../constants.js');
-const err         = require('../utils/error-generator.js')('TOKEN');
+const fs = require('fs');
+const Path = require('path');
+const Buttercup = require('buttercup');
+const prompt = require('inquirer').prompt;
+const constants = require('../constants.js');
+const err = require('../utils/error-generator.js')('TOKEN');
 
-const tokenActions =  {
+const tokenActions = {
     unlock: 'Use Saved Token',
     create: 'Create New Token',
 };

@@ -5,7 +5,7 @@
  */
 
 const Buttercup = require('buttercup');
-const prompt = require('./prompt.js');
+const prompt = require('inquirer').prompt;
 const buttercup = require('../constants.js').buttercup;
 const bcupPath = `${__dirname}/../../.git-labelmaker.bcup`;
 

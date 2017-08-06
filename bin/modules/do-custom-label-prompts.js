@@ -5,7 +5,7 @@
  */
 
 
-const prompt = require('./prompt.js');
+const prompt = require('inquirer').prompt;
 
 module.exports = (prompts) => {
     const doCustomLabelPrompts = (newLabels, done) => {

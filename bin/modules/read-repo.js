@@ -6,8 +6,8 @@
  */
 
 
+const prompt = require('inquirer').prompt;
 const getParsedGitUrl = require('./get-parsed-git-url.js');
-const prompt = require('./prompt.js');
 const askWhichRemotePrompt = require('../prompts/ask-which-remote.js');
 const err = require('../utils/error-generator.js')('READ_REPO')('Could not read git repo from your .git/ directory!');
 
