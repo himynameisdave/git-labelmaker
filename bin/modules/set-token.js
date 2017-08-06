@@ -6,17 +6,20 @@
 
 const Buttercup = require('buttercup');
 const prompt = require('./prompt.js');
-
+const buttercup = require('../constants.js').buttercup;
 const bcupPath = `${__dirname}/../../.git-labelmaker.bcup`;
 
-const writeToken = (password, token) => new Promise((res, rej) => {
+
+const writeToken = (password, token) => new Promise((res, rej) => { // eslint-disable-line consistent-return
     const datasource = new Buttercup.FileDatasource(bcupPath);
     if (!datasource) return rej('No datasource');
-    const archive = Buttercup.Archive.createWithDefaults();
-    const group = archive.createGroup('git-labelmaker');
-    group.setAttribute('token', token);
-    datasource.save(archive, password);
-    return res(token);
+    const archive = new Buttercup.Archive();
+    const glGroup = archive.createGroup(buttercup.group);
+    const tokenEntry = glGroup.createEntry(buttercup.entry);
+    tokenEntry.setProperty(buttercup.property, token);
+    datasource.save(archive, Buttercup.createCredentials.fromPassword(password))
+        .then(() => res(token))
+        .catch(e => rej(e));
 });
 
 module.exports = (done) => {

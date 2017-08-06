@@ -25,6 +25,7 @@
         "key-spacing": [0],
         "radix": [0],
         "strict": [0, "never"],
-        "import/extensions": [0]
+        "import/extensions": [0],
+        "import/newline-after-import": [0]
     }
 }

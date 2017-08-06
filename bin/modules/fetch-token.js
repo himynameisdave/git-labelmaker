@@ -7,13 +7,14 @@ const fs          = require('fs');
 const Path        = require('path');
 const Buttercup   = require('buttercup');
 const prompt      = require('./prompt.js');
+const constants      = require('../constants.js');
 const err         = require('../utils/error-generator.js')('TOKEN');
 
 const tokenActions =  {
     unlock: 'Use Saved Token',
     create: 'Create New Token',
 };
-const bcupPath    = Path.resolve(__dirname, '../..', '.git-labelmaker.bcup');
+const bcupPath = Path.resolve(__dirname, '../..', '.git-labelmaker.bcup');
 
 module.exports = (rememberedToken) => new Promise((res, rej) => {
     if (rememberedToken) return res(rememberedToken);
@@ -35,13 +36,14 @@ module.exports = (rememberedToken) => new Promise((res, rej) => {
                         }])
                             .then(ans => {
                                 const datasource = new Buttercup.FileDatasource(bcupPath);
-                                datasource.load(ans.master_password).then((archive) => {
-                                    // This is only guaranteed to work on buttercup 0.14.0, awaiting PR in buttercup
-                                    const groups = archive.getGroups();
-                                    const group = groups.filter((g) => g._remoteObject.title === 'git-labelmaker')[0];
-                                    const token = group.getAttribute('token');
-                                    res(token);
-                                })
+                                datasource
+                                    .load(Buttercup.createCredentials.fromPassword(ans.master_password))
+                                    .then((archive) => {
+                                        const group = archive.findGroupsByTitle(constants.buttercup.group)[0];
+                                        const entry = group.getEntries()[0];
+                                        const token = entry.getProperty(constants.buttercup.property);
+                                        res(token);
+                                    })
                                     .catch(e => {
                                         if (e.message === 'Failed opening archive: Error: Encrypted content has been tampered with') {
                                             return rej({

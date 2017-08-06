@@ -37,7 +37,7 @@
   },
   "homepage": "https://github.com/himynameisdave/git-labelmaker#readme",
   "dependencies": {
-    "buttercup": "~0.24.0",
+    "buttercup": "^0.45.0",
     "git-label": "^4.1.1",
     "github-url-from-git": "^1.5.0",
     "inquirer": "^0.11.1",
