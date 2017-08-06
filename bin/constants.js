@@ -1,4 +1,9 @@
 const constants = {
+    buttercup: {
+        group: 'git-labelmaker',
+        entry: 'githubtoken',
+        property: 'password',
+    },
     menuChoices: [
         'Add Custom Labels',
         'Add Labels From Package',

@@ -11,15 +11,15 @@ const isJsonString = require('../utils/is-json-string.js');
 
 //  Not using arrows bc it will mess up "this" context
 module.exports = function (jsonPath) { // eslint-disable-line func-names
-  // Declare function as asynchronous, and save the done callback
+    // Declare function as asynchronous, and save the done callback
     const done = this.async();
     try {
         if (jsonPath.indexOf('.json') < 0) {
             done('Not a JSON file');
             return;
         }
-    // Calculate the full path of the JSON file based upon the current working directory. Using
-    // path.resolve allows for absolute paths to be used also.
+        // Calculate the full path of the JSON file based upon the current working directory. Using
+        // path.resolve allows for absolute paths to be used also.
         const fullPath = path.resolve(process.cwd(), jsonPath);
         fs.readFile(fullPath, (err, data) => {
             if (err) { done(err); return; }

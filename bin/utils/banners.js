@@ -5,10 +5,10 @@
 const pad33 = require('./pad-33.js');
 const banners = require('../constants.js').banners;
 
-const bar      = '=======================================\n';
-const block    = ']|[';
+const bar = '=======================================\n';
+const block = ']|[';
 const emptyRow = `${block}                                 ${block}\n`;
-const printBanner =  (banner) => () => console.log(`${bar + emptyRow + block + banner + block}\n${emptyRow}${bar}`);
+const printBanner = (banner) => () => console.log(`${bar + emptyRow + block + banner + block}\n${emptyRow}${bar}`);
 
 
 const props = [
@@ -24,5 +24,5 @@ const props = [
 ];
 
 module.exports = banners.map(pad33)
-                        .map(printBanner)
-                        .reduce((a, b, i) => Object.assign(a, { [props[i]]: b, }), {});
+    .map(printBanner)
+    .reduce((a, b, i) => Object.assign(a, { [props[i]]: b, }), {});

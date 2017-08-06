@@ -16,10 +16,9 @@ module.exports = (color) => {
     const includesNonNumbers = arr => !!(arr.filter(val => isNaN(val)).length);
     //  actually generates our RGB values
     const values = color.split(',')
-                      .map(val => val.toLowerCase())
-                      .map(stripNonValRgbText)
-                      .map(val => parseInt(val));
-    // console.log(values);
-    if (values.length > 3 || includesNonNumbers(values)) return new Error('You must pass a valid RGB value to convertRGBToHex!');
+        .map(val => val.toLowerCase())
+        .map(stripNonValRgbText)
+        .map(val => parseInt(val));
+    if (values.length > 3 || includesNonNumbers(values)) throw new Error('You must pass a valid RGB value to convertRGBToHex!');
     return rgbHex(values[0], values[1], values[2]);
 };

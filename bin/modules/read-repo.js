@@ -6,8 +6,8 @@
  */
 
 
+const prompt = require('inquirer').prompt;
 const getParsedGitUrl = require('./get-parsed-git-url.js');
-const prompt = require('./prompt.js');
 const askWhichRemotePrompt = require('../prompts/ask-which-remote.js');
 const err = require('../utils/error-generator.js')('READ_REPO')('Could not read git repo from your .git/ directory!');
 
@@ -29,13 +29,13 @@ module.exports = (config) => new Promise((res, rej) => {
 
     if (remotes.length > 1) {
         return prompt(askWhichRemotePrompt(remotes))
-          .then(({ remote, }) => {
-              res(getParsedGitUrl(config, remote, throwReadRepoError));
-          })
-          .catch(e => {
-              throwReadRepoError(e);
-              rej(e); // TODO: redundant because throwReadRepoError exits
-          });
+            .then(({ remote, }) => {
+                res(getParsedGitUrl(config, remote, throwReadRepoError));
+            })
+            .catch(e => {
+                throwReadRepoError(e);
+                rej(e); // TODO: redundant because throwReadRepoError exits
+            });
     }
     if (!hasRemoteUrl(config, remotes[0])) return throwReadRepoError();
     return res(getParsedGitUrl(config, remotes[0], throwReadRepoError));
