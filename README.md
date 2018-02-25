@@ -1,4 +1,6 @@
-## :flags: git-labelmaker [![travis-build-badge](https://api.travis-ci.org/himynameisdave/git-labelmaker.svg?branch=master)](https://travis-ci.org/himynameisdave/git-labelmaker) [![Coverage Status](https://coveralls.io/repos/github/himynameisdave/git-labelmaker/badge.svg?branch=master)](https://coveralls.io/github/himynameisdave/git-labelmaker?branch=master) [![Join the chat at https://gitter.im/himynameisdave/git-labelmaker](https://badges.gitter.im/himynameisdave/git-labelmaker.svg)](https://gitter.im/himynameisdave/git-labelmaker?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+## :flags: git-labelmaker [![travis-build-badge](https://api.travis-ci.org/himynameisdave/git-labelmaker.svg?branch=master)](https://travis-ci.org/himynameisdave/git-labelmaker) [![Coverage Status](https://coveralls.io/repos/github/himynameisdave/git-labelmaker/badge.svg?branch=master)](https://coveralls.io/github/himynameisdave/git-labelmaker?branch=master)
+
+**Version `v2.0` branch**
 
 Edit GitHub labels from the command line using **`git-labelmaker`**! You can easily add or remove GitHub labels, making it easier for your projects to adhere to a [sane labelling](https://medium.com/@dave_lunny/sane-github-labels-c5d2e6004b63) scheme.
 
@@ -66,5 +68,5 @@ Feel free to contribute to the project by opening a [Pull Request](https://githu
 
 ---
 
-*Created by [Dave Lunny](https://twitter.com/dave_lunny) in the glorious year of 2017.*
+*Created by [Dave Lunny](https://twitter.com/dave_lunny) in the glorious year of 2018.*
 *Licensed under MIT :hand:*
