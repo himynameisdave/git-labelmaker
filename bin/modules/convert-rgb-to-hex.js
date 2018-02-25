@@ -4,7 +4,6 @@
  *    @return {String} hex - the hex of the above color
  */
 
-'use strict';
 
 const rgbHex = require('rgb-hex');
 const removeAllFromStr = require('../utils/remove-all-from-str.js');
@@ -20,6 +19,8 @@ module.exports = (color) => {
                       .map(stripNonValRgbText)
                       .map(val => parseInt(val));
     // console.log(values);
-    if (values.length > 3 || includesNonNumbers(values)) return new Error('You must pass a valid RGB value to convertRGBToHex!');
+    if (values.length > 3 || includesNonNumbers(values)) {
+        throw new Error('You must pass a valid RGB value to convertRGBToHex!');
+    }
     return rgbHex(values[0], values[1], values[2]);
 };

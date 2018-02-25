@@ -10,7 +10,10 @@
 const octonode = require('octonode');
 
 module.exports = (repo, token) => new Promise((res, rej) => {
-    octonode.client(token).get(`/repos/${repo}/labels`, { per_page: 100, }, (e, status, body) => {
+    octonode.client(token).get(`/repos/${repo}/labels`, {
+        per_page: 100, // eslint-disable-line camelcase
+    },
+    (e, status, body) => {
         if (e) return rej(e);
         return res(body);
     });

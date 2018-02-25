@@ -5,7 +5,6 @@
  *    @return {String} a "cleaned" string
  */
 
-'use strict';
 
 const S = require('string');
 

@@ -29,7 +29,7 @@ module.exports = (config) => new Promise((res, rej) => {
 
     if (remotes.length > 1) {
         return prompt(askWhichRemotePrompt(remotes))
-          .then(({ remote, }) => {
+          .then(({ remote }) => {
               res(getParsedGitUrl(config, remote, throwReadRepoError));
           })
           .catch(e => {
