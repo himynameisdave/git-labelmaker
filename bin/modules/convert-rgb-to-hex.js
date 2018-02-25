@@ -4,7 +4,6 @@
  *    @return {String} hex - the hex of the above color
  */
 
-'use strict';
 
 const rgbHex = require('rgb-hex');
 const removeAllFromStr = require('../utils/remove-all-from-str.js');

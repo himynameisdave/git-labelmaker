@@ -21,5 +21,5 @@ module.exports = [
         name: 'addAnother',
         message: 'Would you like to add another label?',
         default: true,
-    }
+    },
 ];

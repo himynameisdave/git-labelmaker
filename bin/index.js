@@ -1,35 +1,36 @@
 #!/usr/bin/env node
 
-'use strict';
 
 //    EXTERNAL DEPENDENCIES
-const fs                   = require('fs');
-const iq                   = require('inquirer');
-const gitLabel             = require('git-label');
+const fs = require('fs');
+const iq = require('inquirer');
+const gitLabel = require('git-label');
 //    UTILS ARE STANDALONE METHODS WITH NO DEPENDENCIES
-const alertDeletes         = require('./utils/alert-deletes.js');
-const banner               = require('./utils/banners.js');
-const configGitLabel       = require('./utils/config-git-label.js');
-const filterRemovalLabels  = require('./utils/filter-removal-labels.js');
-const removeAllFromStr     = require('./utils/remove-all-from-str.js');
-const validateRemovals     = require('./utils/validate-removals.js');
+const alertDeletes = require('./utils/alert-deletes.js');
+const banner = require('./utils/banners.js');
+const configGitLabel = require('./utils/config-git-label.js');
+const filterRemovalLabels = require('./utils/filter-removal-labels.js');
+const removeAllFromStr = require('./utils/remove-all-from-str.js');
+const validateRemovals = require('./utils/validate-removals.js');
 //    PROMPTS ARE THE PROMPTS ARRAYS FOR VARIOUS QUESTIONS
-const prompts              = {
-    addCustom:           require('./prompts/add-custom.js'),
-    deleteConfirm:       require('./prompts/delete-confirm.js'),
-    mainMenu:            require('./prompts/main-menu.js'),
+const prompts = {
+    /* eslint-disable global-require */
+    addCustom: require('./prompts/add-custom.js'),
+    deleteConfirm: require('./prompts/delete-confirm.js'),
+    mainMenu: require('./prompts/main-menu.js'),
+    /* eslint-enable global-require */
 };
 //    MODULES ARE UTILS WITH DEPENDENCIES
-const convertRGBToHex      = require('./modules/convert-rgb-to-hex.js');
+const convertRGBToHex = require('./modules/convert-rgb-to-hex.js');
 const doCustomLabelPrompts = require('./modules/do-custom-label-prompts.js')(prompts.addCustom);
-const readRepo             = require('./modules/read-repo.js');
-const setToken             = require('./modules/set-token.js');
-const fetchToken           = require('./modules/fetch-token.js');
-const isGitRepo            = require('./modules/is-git-repo.js');
-const readGitConfig        = require('./modules/read-git-config.js');
-const requestLabels        = require('./modules/request-labels.js');
-const prompt               = require('./modules/prompt.js');
-const validateAddPackages  = require('./modules/validate-add-packages.js');
+const readRepo = require('./modules/read-repo.js');
+const setToken = require('./modules/set-token.js');
+const fetchToken = require('./modules/fetch-token.js');
+const isGitRepo = require('./modules/is-git-repo.js');
+const readGitConfig = require('./modules/read-git-config.js');
+const requestLabels = require('./modules/request-labels.js');
+const prompt = require('./modules/prompt.js');
+const validateAddPackages = require('./modules/validate-add-packages.js');
 
 //    Kicks things off, named so that it can be called at any time
 //    The params will sometimes come thru if we've just set the token, so if we got them we alter the call a lil...
@@ -147,8 +148,8 @@ const handleMainPrompts = (repo, token, ans) => {
         case 'add labels from package':
             banner.addFromPackage();
             return prompt([{
-                name:    'path',
-                type:    'input',
+                name: 'path',
+                type: 'input',
                 message: 'What is the path & name of the package you want to use? (eg: `packages/my-label-pkg.json`)',
                 validate: validateAddPackages,
             }])
@@ -164,11 +165,11 @@ const handleMainPrompts = (repo, token, ans) => {
                   console.log('Creating a labels package from these labels:');
                   labelPkg = labels.map(label => {
                       console.log(` - ${label.name}`);
-                      return { name: label.name, color: `#${label.color}`, };
+                      return { name: label.name, color: `#${label.color}` };
                   });
                   return prompt([{
-                      name:    'name',
-                      type:    'input',
+                      name: 'name',
+                      type: 'input',
                       message: 'What would you like to name this .json file?',
                       default: 'labels.json',
                   }]);
@@ -193,12 +194,12 @@ const handleMainPrompts = (repo, token, ans) => {
               .then(labels => {
                   if (labels.length <= 0) return new Error('This repo has no labels to remove!');
                   return prompt([{
-                      name:     'removals',
-                      type:     'checkbox',
-                      message:  'Which labels would you like to remove?',
-                      choices:  labels.map((label) => label.name),
+                      name: 'removals',
+                      type: 'checkbox',
+                      message: 'Which labels would you like to remove?',
+                      choices: labels.map((label) => label.name),
                       validate: validateRemovals,
-                      filter:   filterRemovalLabels.bind(null, labels),
+                      filter: filterRemovalLabels.bind(null, labels),
                   }]);
               })
               .then(answers => {

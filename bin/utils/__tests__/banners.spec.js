@@ -2,8 +2,8 @@ const banners = require('../banners.js');
 const pad33 = require('../pad-33.js');
 const constants = require('../../constants.js');
 
-const bar      = '=======================================\n';
-const block    = ']|[';
+const bar = '=======================================\n';
+const block = ']|[';
 const emptyRow = `${block}                                 ${block}\n`;
 const makeExpected = (banner) => `${bar + emptyRow + block + banner + block}\n${emptyRow}${bar}`;
 const _console = console;
@@ -13,7 +13,7 @@ beforeEach(() => {
 });
 
 afterAll(() => {
-    console = _console; // eslint-disable-line no-global-assign
+    console = _console; // eslint-disable-line
 });
 
 

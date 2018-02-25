@@ -1,4 +1,4 @@
-'use strict';
+
 
 const alertDeletes = require('../alert-deletes.js');
 
@@ -9,14 +9,14 @@ beforeEach(() => {
 });
 
 afterAll(() => {
-    console = _console; // eslint-disable-line no-global-assign
+    console = _console; // eslint-disable-line
 });
 
 const getRemovals = () => {
     const rand = () => Math.floor(Math.random() * 15) + 1;
     const arr = [];
     for (let i = 0; i < rand(); i++) {
-        arr.push({ name: `Testamundo #${rand()}`, });
+        arr.push({ name: `Testamundo #${rand()}` });
     }
     return arr;
 };

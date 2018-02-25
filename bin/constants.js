@@ -6,7 +6,7 @@ const constants = {
         'Remove Labels',
         'Remove All Labels',
         'Reset Token',
-        'Quit'
+        'Quit',
     ],
     banners: [
         'Welcome to git-labelmaker',
@@ -17,7 +17,7 @@ const constants = {
         'Resetting Token',
         'See Ya!',
         'Wrong Password!',
-        'Removing All Labels'
+        'Removing All Labels',
     ],
 };
 
