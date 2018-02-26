@@ -1,6 +1,3 @@
-#!/usr/bin/env node
-
-
 //    EXTERNAL DEPENDENCIES
 const fs = require('fs');
 const iq = require('inquirer');
