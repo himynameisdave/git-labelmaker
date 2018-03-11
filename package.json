@@ -1,22 +1,22 @@
 {
   "name": "git-labelmaker",
-  "version": "2.0.0-alpha-1",
+  "version": "2.0.0-alpha-2",
   "description": "Manage your GitHub labels from the command line!",
-  "main": "bin/index.js",
+  "main": "bin/git-labelmaker",
   "scripts": {
-    "start": "./bin/index.js",
+    "start": "node bin/git-labelmaker",
     "test": "jest --verbose --coverage --no-cache",
     "test-coverage": "jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
-    "lint": "eslint ./bin/ --no-cache",
-    "precommit": "npm run lint && npm run test",
-    "prepublish": "npm run lint && npm run test"
+    "lint": "eslint ./src/ --no-cache",
+    "build": "rm -rf bin/ && rollup -c",
+    "postinstall": "npm run build"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/himynameisdave/git-labelmaker.git"
   },
   "bin": {
-    "git-labelmaker": "bin/index.js"
+    "git-labelmaker": "bin/git-labelmaker"
   },
   "engines": {
     "node": ">= 4.0.0",
@@ -47,13 +47,20 @@
     "string": "^3.3.3"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-eslint": "^8.2.2",
+    "babel-preset-env": "^1.6.1",
     "coveralls": "^2.13.0",
     "eslint": "^4.18.1",
     "eslint-config-himynameisdave": "^0.0.3",
     "eslint-plugin-filenames": "^1.2.0",
     "eslint-plugin-import": "^2.9.0",
     "husky": "^0.13.3",
-    "jest": "^22.4.2"
+    "jest": "^22.4.2",
+    "rollup": "^0.56.3",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-commonjs": "^8.3.0",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-resolve": "^3.0.3"
   }
 }
