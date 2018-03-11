@@ -1,8 +1,12 @@
 ## :flags: git-labelmaker [![travis-build-badge](https://api.travis-ci.org/himynameisdave/git-labelmaker.svg?branch=master)](https://travis-ci.org/himynameisdave/git-labelmaker) [![Coverage Status](https://coveralls.io/repos/github/himynameisdave/git-labelmaker/badge.svg?branch=master)](https://coveralls.io/github/himynameisdave/git-labelmaker?branch=master)
 
-**Version `v2.0` branch**
+**Version `v2.0.0-beta` branch**
 
-Edit GitHub labels from the command line using **`git-labelmaker`**! You can easily add or remove GitHub labels, making it easier for your projects to adhere to a [sane labelling](https://medium.com/@dave_lunny/sane-github-labels-c5d2e6004b63) scheme.
+⚠️ This branch is unstable and may not work as intended. You have been warned. ⚠️
+
+---
+
+Edit your repository's labels from the command line with **`git-labelmaker`**. This allows you to easily ensure that your projects to adhere to a [sane labelling](https://medium.com/@dave_lunny/sane-github-labels-c5d2e6004b63) scheme.
 
 ### Install
 
@@ -16,49 +20,40 @@ OR
 npm i -g git-labelmaker
 ```
 
-Currently you **must be using version `>= 4.0.0` of node**, because we're using some fancy-shmancy ES6 stuff (Promises are too awesome to not use), and also because the dependant package `git-label` also currently requires `>= 4.0.0`.
-
-Use **npm version `>= 3.9.0`**,
+Requires a node version of `>= 4.0.0` or higher.
 
 ### Usage
 
-Using this bad boy is a breeze. First `cd` into your git repository, run the command and follow the prompts!
+Navigate into any git directory, then run the command:
 
 ```
 git-labelmaker
+
+OR
+
+glm
 ```
 
-![Preview of git-labelmaker](http://i.imgur.com/UYSjdNw.png)
+### Tokens
 
-#### Token
+You're going to need a token if you want to access either the GitHub or GitLab APIs to be able to edit labels.
 
-To interact with the GitHub API, you will need your own access token, which you can [generate over here](https://github.com/settings/tokens). Make sure your token has `repo` permissions.
+**GitHub**
 
-Instead of having to enter your token each time, `git-labelmaker` will remember it and keep it secure for you while you instead only need to remember a password you create. You can make your password whatever you like - passwords are easier to remember than tokens!
+- [Generate over here](https://github.com/settings/tokens).
+- Make sure your token has `repo` permissions.
 
-Currently, `git-labelmaker` only supports calling the public GitHub API. If you are using GitHub Enterprise and have a custom API path, you might want to check out [`git-label`](https://github.com/jasonbellamy/git-label) instead.
+**GitLab**
 
-#### Add Custom Labels
+- [Generate over here](https://gitlab.com/profile/personal_access_tokens).
+- Make sure your token has `api` scope.
 
-You can add your own labels one at a time. You will be prompted for your new label's text and color. Include the `#` in front of your 3 or 6 digit hex color. Add as many as you like!
-
-#### Add Labels From Package
-
-If you have a labels package in your current directory that you would like to use for adding labels, just supply the path and name of that file. So like if it's at the root of the current directory, just `labels.json`.
-
-It must be a valid, parsable JSON file (although the extension doesn't matter). Check out [these really good ones](https://github.com/jasonbellamy/git-label-packages/tree/master/packages) if you need a template.
-
-#### Create Package From Labels
-
-Create a git label package from the current labels on a repo, so that you can easily use it again.
-
-#### Remove Labels
-
-You can also remove labels. Just select the ones you want to ditch and :boom: they're gone.
 
 ### Contributing
 
-Feel free to contribute to the project by opening a [Pull Request](https://github.com/himynameisdave/git-labelmaker/compare), filing a [new issue](https://github.com/himynameisdave/git-labelmaker/issues/new), or by barking at me on [the twitters](https://twitter.com/dave_lunny).
+Feel free to contribute to the project by opening a [Pull Request](https://github.com/himynameisdave/git-labelmaker/compare), filing a [new issue](https://github.com/himynameisdave/git-labelmaker/issues/new).
+
+You can read the contributing guide [over here](https://github.com/himynameisdave/git-labelmaker/blob/master/.github/CONTRIBUTING.md).
 
 **Related Stuff:**
 > - [`git-label`](https://github.com/jasonbellamy/git-label) by [**jasonbellamy**](https://github.com/jasonbellamy), which `git-labelmaker` uses to add and remove labels
