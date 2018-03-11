@@ -2,7 +2,7 @@
   "name": "git-labelmaker",
   "version": "2.0.0-alpha-2",
   "description": "Manage your GitHub labels from the command line!",
-  "main": "bin/git-labelmaker.js",
+  "main": "bin/git-labelmaker",
   "scripts": {
     "start": "node bin/git-labelmaker",
     "test": "jest --verbose --coverage --no-cache",
@@ -16,7 +16,7 @@
     "url": "git+https://github.com/himynameisdave/git-labelmaker.git"
   },
   "bin": {
-    "git-labelmaker": "bin/git-labelmaker.js"
+    "git-labelmaker": "bin/git-labelmaker"
   },
   "engines": {
     "node": ">= 4.0.0",

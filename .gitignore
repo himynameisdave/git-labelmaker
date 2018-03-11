@@ -2,5 +2,5 @@
 *.bcup
 *.DS_Store
 /coverage/
-*.npm-debug.log
+*npm-debug.log
 /bin/
