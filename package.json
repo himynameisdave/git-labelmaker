@@ -1,22 +1,21 @@
 {
   "name": "git-labelmaker",
-  "version": "2.0.0-alpha-2",
+  "version": "2.0.0-beta-0",
   "description": "Manage your GitHub labels from the command line!",
-  "main": "bin/git-labelmaker",
+  "main": "bin/index.js",
   "scripts": {
-    "start": "node bin/git-labelmaker",
-    "test": "jest --verbose --coverage --no-cache",
-    "test-coverage": "jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
+    "build": "npm run clean && babel ./src --out-dir ./bin",
+    "clean": "rm -rf bin/ && mkdir bin",
+    "dev": "babel ./src --out-dir ./bin --watch",
     "lint": "eslint ./src/ --no-cache",
-    "build": "rm -rf bin/ && rollup -c",
-    "postinstall": "npm run build"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/himynameisdave/git-labelmaker.git"
+    "postinstall": "npm run build",
+    "precommit": "npm run lint && npm run test",
+    "test": "jest --verbose --coverage --no-cache",
+    "test-coverage": "jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "bin": {
-    "git-labelmaker": "bin/git-labelmaker"
+    "git-labelmaker": "bin/index.js",
+    "glm": "bin/index.js"
   },
   "engines": {
     "node": ">= 4.0.0",
@@ -32,35 +31,25 @@
   ],
   "author": "himynameisdave",
   "license": "MIT",
+  "homepage": "https://github.com/himynameisdave/git-labelmaker#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/himynameisdave/git-labelmaker.git"
+  },
   "bugs": {
     "url": "https://github.com/himynameisdave/git-labelmaker/issues"
   },
-  "homepage": "https://github.com/himynameisdave/git-labelmaker#readme",
-  "dependencies": {
-    "buttercup": "~0.24.0",
-    "git-label": "^4.1.1",
-    "github-url-from-git": "^1.5.0",
-    "inquirer": "^0.11.1",
-    "octonode": "^0.7.4",
-    "parse-git-config": "^1.1.1",
-    "rgb-hex": "^2.1.0",
-    "string": "^3.3.3"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-eslint": "^8.2.2",
-    "babel-preset-env": "^1.6.1",
-    "coveralls": "^2.13.0",
-    "eslint": "^4.18.1",
-    "eslint-config-himynameisdave": "^0.0.3",
-    "eslint-plugin-filenames": "^1.2.0",
-    "eslint-plugin-import": "^2.9.0",
-    "husky": "^0.13.3",
-    "jest": "^22.4.2",
-    "rollup": "^0.56.3",
-    "rollup-plugin-babel": "^3.0.3",
-    "rollup-plugin-commonjs": "^8.3.0",
-    "rollup-plugin-node-builtins": "^2.1.2",
-    "rollup-plugin-node-resolve": "^3.0.3"
+    "babel-cli": "6.26.0",
+    "babel-eslint": "8.2.2",
+    "babel-preset-env": "1.6.1",
+    "coveralls": "3.0.0",
+    "eslint": "4.18.2",
+    "eslint-config-himynameisdave": "0.0.3",
+    "eslint-plugin-filenames": "1.2.0",
+    "eslint-plugin-import": "2.9.0",
+    "husky": "0.14.3",
+    "jest": "22.4.2"
   }
 }

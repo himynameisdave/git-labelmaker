@@ -2,9 +2,8 @@
     "presets": [
         ["env", {
             "targets": {
-                "node": "4.8.7" // LTS Argon
-            },
-            "modules": false
-        }],
+                "node": "4.0.0"
+            }
+        }]
     ]
 }

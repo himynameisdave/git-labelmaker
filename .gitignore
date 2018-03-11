@@ -3,4 +3,6 @@
 *.DS_Store
 /coverage/
 *npm-debug.log
+*yarn-error.log
 /bin/
+/planning/
