@@ -7,7 +7,7 @@
 
 
 module.exports = (repo, token) => ({
-    api:    'https://api.github.com',
+    api:    'https://api.github.com/repos',
     repo,
     token,
 });
