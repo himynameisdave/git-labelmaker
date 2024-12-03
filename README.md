@@ -1,5 +1,10 @@
 ## :flags: git-labelmaker [![travis-build-badge](https://api.travis-ci.org/himynameisdave/git-labelmaker.svg?branch=master)](https://travis-ci.org/himynameisdave/git-labelmaker) [![Coverage Status](https://coveralls.io/repos/github/himynameisdave/git-labelmaker/badge.svg?branch=master)](https://coveralls.io/github/himynameisdave/git-labelmaker?branch=master) [![Join the chat at https://gitter.im/himynameisdave/git-labelmaker](https://badges.gitter.im/himynameisdave/git-labelmaker.svg)](https://gitter.im/himynameisdave/git-labelmaker?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+> [!CAUTION]
+> This project has been sunsetted and is now read-only. There are much better ways to manage GitHub labels now, I'd highly reccommend [`srvaroa/labeler`](https://github.com/srvaroa/labeler), which is a GitHub Action for auto-labeling Issues and Pull Requests.
+> Thanks to all that helped to build this project.
+
+
 Edit GitHub labels from the command line using **`git-labelmaker`**! You can easily add or remove GitHub labels, making it easier for your projects to adhere to a [sane labelling](https://medium.com/@dave_lunny/sane-github-labels-c5d2e6004b63) scheme.
 
 ### Install
