@@ -11,7 +11,6 @@
         "indent": [2, 4, { "SwitchCase": 1, "VariableDeclarator": 1 }],
         "max-len": [0],
         "no-console": [0],
-        "no-multi-spaces": [0],
         "no-plusplus": [0],
         "no-underscore-dangle": [0],
         "global-require": [0],
@@ -25,6 +24,7 @@
         "key-spacing": [0],
         "radix": [0],
         "strict": [0, "never"],
-        "import/extensions": [0]
+        "import/extensions": [0],
+        "import/newline-after-import": [0]
     }
 }
